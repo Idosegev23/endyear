@@ -7,3 +7,5 @@ export { ValueCards } from './ValueCards';
 export { TimelineCard } from './TimelineCard';
 export { AnimatedList } from './AnimatedList';
 export { FormattedText } from './FormattedText';
+export { BotResponse } from './BotResponse';
+export { TypewriterText } from './TypewriterText';

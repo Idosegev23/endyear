@@ -62,6 +62,7 @@
       },
       {
         "name": "H&M",
+        "growth_pct": 72,
         "teams_credit": ["צוות נועה סבגי"],
         "target": 3000000,
         "actual": 5150000,

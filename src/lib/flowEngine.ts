@@ -291,13 +291,18 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   'TOP_REVENUE_CLIENT_2025': (data) => ({
     type: 'LEADERBOARD',
     props: {
-      title: 'לקוחות בצמיחה',
-      items: data.finance.top_revenue_clients.slice(0, 4).map((c, i) => ({
-        rank: i + 1,
-        name: c.name,
-        value: `${c.growth_pct}%`,
-        subtitle: 'צמיחה'
-      }))
+      title: 'לקוחות בצמיחה 2025',
+      items: data.finance.top_revenue_clients
+        .filter(c => c.growth_pct)
+        .sort((a, b) => (b.growth_pct || 0) - (a.growth_pct || 0))
+        .slice(0, 3)
+        .map((c, i) => ({
+          rank: i + 1,
+          name: c.name,
+          value: c.growth_pct,
+          suffix: '%',
+          subtitle: 'צמיחה'
+        }))
     }
   }),
 

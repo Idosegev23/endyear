@@ -3,7 +3,17 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
-import { ImpactPanel } from './ImpactPanel';
+import {
+  KpiBigNumber,
+  MiniChart,
+  VideoEmbed,
+  Leaderboard,
+  QuoteCard,
+  ValueCards,
+  TimelineCard,
+  AnimatedList,
+  FormattedText
+} from './visuals';
 import type { FlowQuestion } from '@/lib/flowQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
 
@@ -35,7 +45,6 @@ export function ChatShell() {
   const {
     isTyping,
     setIsTyping,
-    setCurrentVisual,
     mode,
     setMode,
     setDebugInfo,
@@ -58,7 +67,6 @@ export function ChatShell() {
     const userMessage = input.trim();
     setInput('');
     
-    // Add user message
     const userMsgId = Date.now();
     setMessages(prev => [...prev, {
       id: userMsgId,
@@ -80,7 +88,6 @@ export function ChatShell() {
 
       const data: ChatApiResponse = await response.json();
 
-      // Add bot message with typing animation
       const botMsgId = Date.now() + 1;
       setMessages(prev => [...prev, {
         id: botMsgId,
@@ -91,7 +98,6 @@ export function ChatShell() {
       }]);
       
       setTypingMessageId(botMsgId);
-      setCurrentVisual(data.visual_payload);
       setDebugInfo(data.intent_id, data.confidence);
       
       if (data.intent_id !== 'UNKNOWN' && data.intent_id !== 'ERROR') {
@@ -125,10 +131,7 @@ export function ChatShell() {
       {/* Header */}
       <header className="bg-near-black px-6 py-3 flex items-center justify-between shrink-0 z-20">
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => setScene('lobby')}
-            className="text-gray-400 hover:text-white transition-colors"
-          >
+          <button onClick={() => setScene('lobby')} className="text-gray-400 hover:text-white transition-colors">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
@@ -150,20 +153,17 @@ export function ChatShell() {
             </button>
             <span className={mode === 'show' ? 'text-gold-main' : 'text-gray-500'}>Show</span>
           </div>
-          <button
-            onClick={() => setScene('vision2026')}
-            className="px-3 py-1.5 text-xs font-medium bg-white/10 text-white rounded hover:bg-white/20 transition-colors"
-          >
+          <button onClick={() => setScene('vision2026')} className="px-3 py-1.5 text-xs font-medium bg-white/10 text-white rounded hover:bg-white/20 transition-colors">
             2026
           </button>
         </div>
       </header>
 
-      {/* Main Content - Two Panels */}
+      {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         
-        {/* LEFT SIDE - WHITE - Itamar's Input */}
-        <motion.div layout className="w-[35%] flex flex-col bg-white border-l border-gray-200">
+        {/* LEFT - Itamar */}
+        <div className="w-[35%] flex flex-col bg-white border-l border-gray-200">
           <div className="flex-1 overflow-y-auto p-6 scrollbar-hide flex flex-col justify-end">
             <div className="space-y-4">
               {messages.filter(m => m.role === 'user').map((msg) => (
@@ -201,12 +201,12 @@ export function ChatShell() {
               </button>
             </form>
           </div>
-        </motion.div>
+        </div>
 
-        {/* RIGHT SIDE - BLACK - Bot Responses (Chat Style) */}
-        <motion.div layout className="w-[65%] bg-deep-black flex flex-col overflow-hidden">
+        {/* RIGHT - Bot */}
+        <div className="w-[65%] bg-deep-black flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
-            <div className="space-y-6">
+            <div className="space-y-8">
               {messages.filter(m => m.role === 'bot').map((msg) => (
                 <BotMessageBubble 
                   key={msg.id}
@@ -216,13 +216,8 @@ export function ChatShell() {
                 />
               ))}
               
-              {/* Loading indicator */}
               {isTyping && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex items-center gap-3 px-4"
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3 px-4">
                   <div className="w-10 h-10 rounded-xl bg-gold-main/20 flex items-center justify-center">
                     <div className="flex gap-1">
                       <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0 }} className="w-1.5 h-1.5 rounded-full bg-gold-main" />
@@ -236,13 +231,43 @@ export function ChatShell() {
               <div ref={messagesEndRef} />
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
 }
 
-// Bot Message Bubble Component
+// Visual Renderer
+function VisualRenderer({ visual }: { visual: VisualPayload }) {
+  const { type, props } = visual;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const p = props as any;
+
+  switch (type) {
+    case 'KPI_BIG_NUMBER':
+      return <KpiBigNumber {...p} />;
+    case 'MINI_CHART':
+      return <MiniChart {...p} />;
+    case 'VIDEO_EMBED':
+      return <VideoEmbed {...p} />;
+    case 'LEADERBOARD':
+      return <Leaderboard {...p} />;
+    case 'QUOTE_CARD':
+      return <QuoteCard {...p} />;
+    case 'VALUE_CARDS':
+      return <ValueCards {...p} />;
+    case 'TIMELINE_CARD':
+      return <TimelineCard {...p} />;
+    case 'ANIMATED_LIST':
+      return <AnimatedList {...p} />;
+    case 'FORMATTED_TEXT':
+      return <FormattedText {...p} />;
+    default:
+      return null;
+  }
+}
+
+// Bot Message Bubble
 function BotMessageBubble({ 
   message, 
   isTyping, 
@@ -282,6 +307,10 @@ function BotMessageBubble({
     return () => clearInterval(interval);
   }, [message.text, isTyping, onTypingComplete]);
 
+  // Check if visual should replace text entirely
+  const isFullVisual = message.visual && 
+    (message.visual.type === 'FORMATTED_TEXT' || message.visual.type === 'ANIMATED_LIST');
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -309,19 +338,31 @@ function BotMessageBubble({
         </div>
       </div>
 
-      {/* Visual - appears after text is done */}
+      {/* Visual - only after text is done, and only if it's not a "full visual" type */}
       <AnimatePresence>
-        {showVisual && message.visual && (
+        {showVisual && message.visual && !isFullVisual && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ type: 'spring', bounce: 0.3 }}
-            className="mr-13 rounded-2xl overflow-hidden bg-gray-900 border border-gray-800"
+            className="rounded-2xl overflow-hidden bg-gray-900 border border-gray-800"
             style={{ marginRight: '52px' }}
           >
-            <div className="max-h-[500px] overflow-y-auto scrollbar-hide">
-              <ImpactPanel expanded={true} />
-            </div>
+            <VisualRenderer visual={message.visual} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Full visual (replaces nothing, just shows after) */}
+      <AnimatePresence>
+        {showVisual && message.visual && isFullVisual && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', bounce: 0.3 }}
+            style={{ marginRight: '52px' }}
+          >
+            <VisualRenderer visual={message.visual} />
           </motion.div>
         )}
       </AnimatePresence>

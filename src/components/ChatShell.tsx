@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { ChatMessage, TypingIndicator } from './ChatMessage';
 import { ImpactPanel } from './ImpactPanel';
+import { getNextQuestions, getOpeningQuestions, FlowQuestion } from '@/lib/flowQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
 
 interface ChatApiResponse {
@@ -22,6 +23,9 @@ interface ChatApiResponse {
 export function ChatShell() {
   const [input, setInput] = useState('');
   const [hasVisual, setHasVisual] = useState(false);
+  const [askedIntents, setAskedIntents] = useState<string[]>([]);
+  const [suggestedQuestions, setSuggestedQuestions] = useState<FlowQuestion[]>([]);
+  const [lastIntentId, setLastIntentId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -48,7 +52,17 @@ export function ChatShell() {
 
   useEffect(() => {
     inputRef.current?.focus();
+    // הצג שאלות פתיחה
+    setSuggestedQuestions(getOpeningQuestions());
   }, []);
+
+  // עדכן שאלות מוצעות אחרי כל תשובה
+  useEffect(() => {
+    if (lastIntentId && !isTyping) {
+      const nextQuestions = getNextQuestions(lastIntentId, askedIntents);
+      setSuggestedQuestions(nextQuestions);
+    }
+  }, [lastIntentId, askedIntents, isTyping]);
 
   useEffect(() => {
     setHasVisual(!!currentVisual && currentVisual.type !== 'QUOTE_CARD');
@@ -91,6 +105,12 @@ export function ChatShell() {
 
       setCurrentVisual(data.visual_payload);
       setDebugInfo(data.intent_id, data.confidence);
+      
+      // שמור את ה-intent ועדכן שאלות מוצעות
+      if (data.intent_id !== 'UNKNOWN' && data.intent_id !== 'ERROR') {
+        setLastIntentId(data.intent_id);
+        setAskedIntents(prev => [...prev, data.intent_id]);
+      }
 
     } catch (error) {
       console.error('Chat error:', error);
@@ -101,6 +121,17 @@ export function ChatShell() {
     } finally {
       setIsTyping(false);
     }
+  };
+
+  const handleSuggestionClick = (question: FlowQuestion) => {
+    setInput(question.question);
+    // Submit automatically
+    setTimeout(() => {
+      const form = document.querySelector('form');
+      if (form) {
+        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      }
+    }, 100);
   };
 
   return (
@@ -179,17 +210,13 @@ export function ChatShell() {
                   שאלו אותי על הכנסות, קמפיינים, אנשים, חדשנות
                 </p>
                 <div className="flex flex-col gap-2 w-full max-w-xs">
-                  {[
-                    'מי הלקוח הכי גדול?',
-                    'כמה חסכנו עם AI?',
-                    'מה הקמפיין הוויראלי?'
-                  ].map((suggestion) => (
+                  {suggestedQuestions.slice(0, 3).map((q) => (
                     <button
-                      key={suggestion}
-                      onClick={() => setInput(suggestion)}
+                      key={q.id}
+                      onClick={() => handleSuggestionClick(q)}
                       className="px-4 py-2.5 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-near-black transition-colors shadow-sm text-right"
                     >
-                      {suggestion}
+                      {q.question}
                     </button>
                   ))}
                 </div>
@@ -202,6 +229,32 @@ export function ChatShell() {
               ))}
               {isTyping && <TypingIndicator />}
             </AnimatePresence>
+
+            {/* Suggested Questions - appear after bot response */}
+            {!isTyping && messages.length > 0 && suggestedQuestions.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-4 mb-2"
+              >
+                <p className="text-xs text-gray-400 mb-2 px-1">שאלות המשך:</p>
+                <div className="flex flex-wrap gap-2">
+                  {suggestedQuestions.map((q, index) => (
+                    <motion.button
+                      key={q.id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.6 + index * 0.1 }}
+                      onClick={() => handleSuggestionClick(q)}
+                      className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-gold-main hover:text-near-black hover:bg-gold-main/5 transition-all shadow-sm"
+                    >
+                      {q.question}
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
             
             <div ref={messagesEndRef} />
           </div>

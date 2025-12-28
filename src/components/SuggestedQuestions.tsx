@@ -10,59 +10,54 @@ interface SuggestedQuestionsProps {
   isVisible: boolean;
 }
 
+// משפטים שהבוט אומר לאיתמר - כמו שני מנחים
+const botToItamarPrompts = [
+  { bot: 'איתמר, מה אם נשאל עכשיו:', prefix: '' },
+  { bot: 'בוא נמשיך עם משהו מעניין -', prefix: 'איתמר שואל:' },
+  { bot: 'יש לי רעיון, תשאל אותי:', prefix: '' },
+  { bot: 'איתמר, הנה השאלה הבאה:', prefix: '' },
+  { bot: 'מה דעתך לשאול על זה?', prefix: 'איתמר:' },
+  { bot: 'בוא נראה מה יש לי על:', prefix: '' },
+  { bot: 'איתמר, תן לי להראות לכולם:', prefix: '' },
+];
+
 export function SuggestedQuestions({ questions, onSelect, isVisible }: SuggestedQuestionsProps) {
-  const [showQuestion, setShowQuestion] = useState(false);
-  const [typingText, setTypingText] = useState('');
-  const [questionTyping, setQuestionTyping] = useState('');
+  const [phase, setPhase] = useState<'idle' | 'bot-typing' | 'show-question'>('idle');
+  const [botText, setBotText] = useState('');
+  const [questionPrefix, setQuestionPrefix] = useState('');
+  const [prompt, setPrompt] = useState({ bot: '', prefix: '' });
   
-  const nextQuestion = questions[0]; // תמיד לוקחים את הראשונה - לפי הסדר
+  const nextQuestion = questions[0];
 
   useEffect(() => {
     if (!isVisible || !nextQuestion) {
-      setShowQuestion(false);
-      setTypingText('');
-      setQuestionTyping('');
+      setPhase('idle');
+      setBotText('');
       return;
     }
 
-    // שלב 1: הבוט מציע
+    // בחר prompt רנדומלי
+    const randomPrompt = botToItamarPrompts[Math.floor(Math.random() * botToItamarPrompts.length)];
+    setPrompt(randomPrompt);
+    setQuestionPrefix(randomPrompt.prefix);
+
+    // שלב 1: הבוט מתחיל לכתוב
     const timer1 = setTimeout(() => {
-      const prompts = [
-        'ואיתמר ממשיך...',
-        'השאלה הבאה:',
-        'בואו נמשיך עם...',
-        'ועכשיו...'
-      ];
-      const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+      setPhase('bot-typing');
       let charIndex = 0;
       
       const typeInterval = setInterval(() => {
-        if (charIndex <= prompt.length) {
-          setTypingText(prompt.slice(0, charIndex));
+        if (charIndex <= randomPrompt.bot.length) {
+          setBotText(randomPrompt.bot.slice(0, charIndex));
           charIndex++;
         } else {
           clearInterval(typeInterval);
-          
-          // שלב 2: השאלה של איתמר מופיעה
-          setTimeout(() => {
-            setShowQuestion(true);
-            let qCharIndex = 0;
-            const questionText = nextQuestion.question;
-            
-            const questionTypeInterval = setInterval(() => {
-              if (qCharIndex <= questionText.length) {
-                setQuestionTyping(questionText.slice(0, qCharIndex));
-                qCharIndex++;
-              } else {
-                clearInterval(questionTypeInterval);
-              }
-            }, 30);
-          }, 400);
+          setTimeout(() => setPhase('show-question'), 300);
         }
-      }, 50);
+      }, 40);
 
       return () => clearInterval(typeInterval);
-    }, 1000);
+    }, 800);
 
     return () => clearTimeout(timer1);
   }, [isVisible, nextQuestion]);
@@ -74,91 +69,114 @@ export function SuggestedQuestions({ questions, onSelect, isVisible }: Suggested
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="mt-6 mb-4"
+      className="mt-6 mb-4 space-y-3"
     >
-      {/* Bot suggesting */}
+      {/* Bot speaks to Itamar */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex items-center gap-2 mb-3 text-gray-400 text-sm"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="flex items-start gap-3"
       >
-        <div className="w-1.5 h-1.5 rounded-full bg-gold-main animate-pulse" />
-        <span>{typingText}</span>
+        {/* Bot Avatar */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', bounce: 0.5 }}
+          className="w-9 h-9 rounded-xl bg-gradient-to-br from-gold-main to-gold-secondary flex items-center justify-center shrink-0 shadow-md"
+        >
+          <svg className="w-5 h-5 text-near-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </motion.div>
+
+        {/* Bot message bubble */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-gray-100 rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[280px]"
+        >
+          <span className="text-sm text-gray-700">
+            {botText}
+            {phase === 'bot-typing' && (
+              <motion.span
+                animate={{ opacity: [1, 0] }}
+                transition={{ duration: 0.5, repeat: Infinity }}
+                className="inline-block w-0.5 h-4 bg-gray-400 mr-0.5 align-middle"
+              />
+            )}
+          </span>
+        </motion.div>
       </motion.div>
 
-      {/* Itamar's next question - looks like he's typing */}
+      {/* Itamar's question - appears after bot */}
       <AnimatePresence>
-        {showQuestion && (
+        {phase === 'show-question' && (
           <motion.div
-            initial={{ opacity: 0, x: 20, scale: 0.95 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
+            initial={{ opacity: 0, x: 20, y: 10 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            className="flex items-start gap-3"
+            className="flex items-start gap-3 justify-end pr-2"
           >
+            {/* Question bubble - clickable */}
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={() => onSelect(nextQuestion)}
+              className="group relative max-w-[320px] text-right"
+            >
+              {/* Prefix if exists */}
+              {questionPrefix && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-xs text-gray-400 mb-1 pr-1"
+                >
+                  {questionPrefix}
+                </motion.p>
+              )}
+
+              <div className="relative bg-white border-2 border-near-black rounded-2xl rounded-tl-sm px-5 py-3.5 transition-all group-hover:border-gold-main group-hover:shadow-xl group-hover:shadow-gold-main/10 overflow-hidden">
+                {/* Shimmer */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-main/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                
+                {/* Question */}
+                <span className="relative text-base font-medium text-near-black">
+                  {nextQuestion.question}
+                </span>
+
+                {/* Click pulse */}
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-gold-main"
+                />
+              </div>
+            </motion.button>
+
             {/* Itamar Avatar */}
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', bounce: 0.5, delay: 0.1 }}
-              className="w-10 h-10 rounded-xl bg-gradient-to-br from-near-black to-gray-800 flex items-center justify-center text-white text-sm font-bold shrink-0 shadow-lg"
+              className="w-9 h-9 rounded-xl bg-gradient-to-br from-near-black to-gray-800 flex items-center justify-center text-white text-sm font-bold shrink-0 shadow-md"
             >
               א
             </motion.div>
-
-            {/* Question bubble - clickable */}
-            <motion.button
-              whileHover={{ scale: 1.01, x: -3 }}
-              whileTap={{ scale: 0.99 }}
-              onClick={() => onSelect(nextQuestion)}
-              className="group relative flex-1 text-right"
-            >
-              <div className="relative bg-white border-2 border-gray-200 rounded-2xl rounded-tr-sm px-5 py-4 transition-all group-hover:border-gold-main group-hover:shadow-xl group-hover:shadow-gold-main/10 overflow-hidden">
-                {/* Shimmer effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-main/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                
-                {/* Question text with typing effect */}
-                <div className="relative">
-                  <span className="text-base font-medium text-gray-800 group-hover:text-near-black transition-colors">
-                    {questionTyping}
-                  </span>
-                  <motion.span
-                    animate={{ opacity: questionTyping.length < nextQuestion.question.length ? [1, 0] : 0 }}
-                    transition={{ duration: 0.5, repeat: Infinity }}
-                    className="inline-block w-0.5 h-5 bg-gold-main mr-1 align-middle"
-                  />
-                </div>
-
-                {/* Click indicator */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 2 }}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gold-main opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <motion.div
-                    animate={{ x: [-2, 2, -2] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    <svg className="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </motion.div>
-                </motion.div>
-              </div>
-
-              {/* Subtle hint */}
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.5 }}
-                className="text-[11px] text-gray-400 mt-1.5 pr-2"
-              >
-                לחצו להמשך או הקלידו שאלה אחרת
-              </motion.p>
-            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Hint */}
+      {phase === 'show-question' && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+          className="text-[11px] text-gray-400 text-center"
+        >
+          לחצו על השאלה להמשיך
+        </motion.p>
+      )}
     </motion.div>
   );
 }
@@ -174,24 +192,45 @@ export function SuggestedQuestionsCompact({ questions, onSelect, isVisible }: Su
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
-      className="mt-3"
+      className="mt-3 space-y-2"
     >
+      {/* Bot mini prompt */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className="flex items-center gap-2 text-xs text-gray-400"
+      >
+        <div className="w-5 h-5 rounded-md bg-gold-main/20 flex items-center justify-center">
+          <svg className="w-3 h-3 text-gold-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <span>איתמר, מה דעתך על:</span>
+      </motion.div>
+
+      {/* Question button */}
       <motion.button
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: 0.7 }}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={() => onSelect(nextQuestion)}
-        className="flex items-center gap-2 px-4 py-2 bg-gold-main/10 border border-gold-main/30 rounded-xl text-sm text-near-black hover:bg-gold-main/20 transition-colors w-full text-right"
+        className="flex items-center gap-2 px-4 py-2.5 bg-white border-2 border-near-black rounded-xl text-sm text-near-black hover:border-gold-main hover:shadow-lg transition-all w-full text-right"
       >
         <span className="w-6 h-6 rounded-lg bg-near-black text-white text-xs flex items-center justify-center font-bold shrink-0">
           א
         </span>
-        <span className="flex-1 truncate">{nextQuestion.question}</span>
-        <svg className="w-4 h-4 text-gold-main rotate-180 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
+        <span className="flex-1 font-medium truncate">{nextQuestion.question}</span>
+        <motion.div
+          animate={{ x: [-2, 2, -2] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <svg className="w-4 h-4 text-gold-main rotate-180 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </motion.div>
       </motion.button>
     </motion.div>
   );

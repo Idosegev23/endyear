@@ -238,81 +238,83 @@ export function ChatShell() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="h-full flex flex-col items-center justify-center text-center px-4"
+                className="h-full flex flex-col items-center justify-center px-4"
               >
                 {/* Welcome */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="mb-8"
+                  className="text-center mb-10"
                 >
-                  <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-gold-main/20 to-gold-main/5 flex items-center justify-center mx-auto">
-                    <svg className="w-8 h-8 text-gold-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">בוקר טוב</h3>
+                  <h3 className="text-2xl font-semibold mb-2">בוקר טוב</h3>
                   <p className="text-gray-500 text-sm">
                     מוכנים לסיכום השנה?
                   </p>
                 </motion.div>
 
-                {/* Itamar starts - single question */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 }}
-                  className="w-full max-w-md"
-                >
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1 }}
-                    className="text-sm text-gray-400 mb-3"
+                {/* Bot invites Itamar to start */}
+                <motion.div className="w-full max-w-md space-y-4">
+                  {/* Bot message */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 }}
+                    className="flex items-start gap-3"
                   >
-                    איתמר מתחיל...
-                  </motion.p>
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-main to-gold-secondary flex items-center justify-center shrink-0 shadow-md">
+                      <svg className="w-5 h-5 text-near-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div className="bg-gray-100 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[280px]">
+                      <span className="text-sm text-gray-700">
+                        איתמר, בוא נתחיל. תשאל אותי:
+                      </span>
+                    </div>
+                  </motion.div>
 
-                  <motion.button
-                    initial={{ opacity: 0, x: 30 }}
+                  {/* Itamar's first question */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 1.2, type: 'spring', stiffness: 200 }}
-                    whileHover={{ scale: 1.02, x: -5 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleSuggestionClick(suggestedQuestions[0])}
-                    className="group w-full flex items-start gap-3 text-right"
+                    className="flex items-start gap-3 justify-end"
                   >
-                    {/* Itamar Avatar */}
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-near-black to-gray-800 flex items-center justify-center text-white font-bold shrink-0 shadow-lg">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleSuggestionClick(suggestedQuestions[0])}
+                      className="group relative max-w-[300px] text-right"
+                    >
+                      <div className="relative bg-white border-2 border-near-black rounded-2xl rounded-tl-sm px-5 py-4 transition-all group-hover:border-gold-main group-hover:shadow-xl group-hover:shadow-gold-main/10 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-main/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                        
+                        <span className="relative text-base font-medium text-near-black">
+                          {suggestedQuestions[0].question}
+                        </span>
+
+                        <motion.div
+                          animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-gold-main"
+                        />
+                      </div>
+                    </motion.button>
+
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-near-black to-gray-800 flex items-center justify-center text-white font-bold shrink-0 shadow-md">
                       א
                     </div>
+                  </motion.div>
 
-                    {/* Question bubble */}
-                    <div className="flex-1 relative bg-white border-2 border-gray-200 rounded-2xl rounded-tr-sm px-5 py-4 transition-all group-hover:border-gold-main group-hover:shadow-xl overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-main/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                      
-                      <span className="relative text-base font-medium text-gray-800 group-hover:text-near-black transition-colors">
-                        {suggestedQuestions[0].question}
-                      </span>
-
-                      <motion.div
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gold-main opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <svg className="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </motion.div>
-                    </div>
-                  </motion.button>
-
+                  {/* Hint */}
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 1.8 }}
-                    className="text-xs text-gray-400 mt-3 text-center"
+                    transition={{ delay: 2 }}
+                    className="text-xs text-gray-400 text-center"
                   >
-                    לחצו להתחיל או הקלידו שאלה משלכם
+                    לחצו על השאלה להתחיל
                   </motion.p>
                 </motion.div>
               </motion.div>

@@ -473,11 +473,13 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
     }
   }),
 
-  'RAP_SUMMARY': () => ({
-    type: 'QUOTE_CARD',
+  'RAP_SUMMARY': (data) => ({
+    type: 'AUDIO_PLAYER',
     props: {
-      quote: 'ב-2025 לידרס על המפה, זה כבר לא וייב זה עובדה',
-      author: 'LEADERS RAP'
+      src: '/vids/sound/song.mp3',
+      title: 'LEADERS RAP 2025',
+      autoPlay: true,
+      lyrics: data.rap_summary.lyrics
     }
   })
 };

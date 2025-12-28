@@ -16,7 +16,8 @@ export type VisualType =
   | 'VIDEO_WITH_KPI'
   | 'COMPARISON_TABLE'
   | 'VIDEO_GALLERY'
-  | 'CONSULTANT_CARDS';
+  | 'CONSULTANT_CARDS'
+  | 'AUDIO_PLAYER';
 
 export interface VisualPayload {
   type: VisualType;

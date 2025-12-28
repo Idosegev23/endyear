@@ -15,3 +15,4 @@ export { VideoWithKpi } from './VideoWithKpi';
 export { VideoGallery } from './VideoGallery';
 export { ComparisonTable } from './ComparisonTable';
 export { ConsultantCards } from './ConsultantCards';
+export { AudioPlayer } from './AudioPlayer';

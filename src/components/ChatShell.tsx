@@ -124,56 +124,6 @@ export function ChatShell() {
     }
   };
 
-  const handleSuggestionClick = async (question: FlowQuestion) => {
-    if (isTyping) return;
-    
-    // Add user message immediately
-    addMessage({
-      role: 'user',
-      text: question.question
-    });
-
-    setIsTyping(true);
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: question.question,
-          mode,
-          current_scene: 'chat'
-        })
-      });
-
-      const data: ChatApiResponse = await response.json();
-
-      addMessage({
-        role: 'bot',
-        text: data.answer_text,
-        intentId: data.intent_id,
-        visualPayload: data.visual_payload
-      });
-
-      setCurrentVisual(data.visual_payload);
-      setDebugInfo(data.intent_id, data.confidence);
-      
-      if (data.intent_id !== 'UNKNOWN' && data.intent_id !== 'ERROR') {
-        setLastIntentId(data.intent_id);
-        setAskedIntents(prev => [...prev, data.intent_id]);
-      }
-
-    } catch (error) {
-      console.error('Chat error:', error);
-      addMessage({
-        role: 'bot',
-        text: 'משהו השתבש. ננסה שוב?'
-      });
-    } finally {
-      setIsTyping(false);
-    }
-  };
-
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-bg-base">
       {/* Header */}
@@ -253,8 +203,8 @@ export function ChatShell() {
                   </p>
                 </motion.div>
 
-                {/* Bot and Itamar hosting together */}
-                <motion.div className="w-full max-w-lg space-y-4">
+                {/* Bot suggests - Itamar types freely */}
+                <motion.div className="w-full max-w-lg">
                   {/* Bot message */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -279,36 +229,15 @@ export function ChatShell() {
                     </motion.div>
                   </motion.div>
 
-                  {/* Itamar's response */}
-                  <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1.5, type: 'spring', stiffness: 200 }}
-                    className="flex justify-end pr-2"
+                  {/* Hint to type */}
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.5 }}
+                    className="text-xs text-gray-400 text-center mt-6"
                   >
-                    <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => handleSuggestionClick(suggestedQuestions[0])}
-                      className="group flex items-center gap-3"
-                    >
-                      {/* Button */}
-                      <motion.div className="relative bg-near-black text-white px-6 py-3.5 rounded-2xl rounded-tl-sm font-medium text-base shadow-lg overflow-hidden">
-                        {/* Shine effect */}
-                        <motion.div
-                          animate={{ x: ['-100%', '200%'] }}
-                          transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
-                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-                        />
-                        <span className="relative">{suggestedQuestions[0].question}</span>
-                      </motion.div>
-
-                      {/* Itamar Avatar */}
-                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-near-black to-gray-800 flex items-center justify-center text-white text-lg font-bold shrink-0 shadow-lg border-2 border-gold-main">
-                        א
-                      </div>
-                    </motion.button>
-                  </motion.div>
+                    הקלידו תשובה למטה
+                  </motion.p>
                 </motion.div>
               </motion.div>
             )}
@@ -320,17 +249,15 @@ export function ChatShell() {
               {isTyping && <TypingIndicator />}
             </AnimatePresence>
 
-            {/* Suggested Questions - Itamar style */}
+            {/* Bot suggests next topic - Itamar types freely */}
             {hasVisual ? (
               <SuggestedQuestionsCompact
                 questions={suggestedQuestions}
-                onSelect={handleSuggestionClick}
                 isVisible={!isTyping && messages.length > 0}
               />
             ) : (
               <SuggestedQuestions
                 questions={suggestedQuestions}
-                onSelect={handleSuggestionClick}
                 isVisible={!isTyping && messages.length > 0}
               />
             )}

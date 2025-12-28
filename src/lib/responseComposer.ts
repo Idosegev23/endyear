@@ -9,7 +9,8 @@ export type VisualType =
   | 'QUOTE_CARD'
   | 'VALUE_CARDS'
   | 'TIMELINE_CARD'
-  | 'ANIMATED_LIST';
+  | 'ANIMATED_LIST'
+  | 'FORMATTED_TEXT';
 
 export interface VisualPayload {
   type: VisualType;

@@ -10,7 +10,8 @@ import {
   QuoteCard,
   ValueCards,
   TimelineCard,
-  AnimatedList
+  AnimatedList,
+  FormattedText
 } from './visuals';
 
 interface ImpactPanelProps {
@@ -113,6 +114,9 @@ export function ImpactPanel({ expanded = false }: ImpactPanelProps) {
       
       case 'ANIMATED_LIST':
         return <AnimatedList {...(props as unknown as React.ComponentProps<typeof AnimatedList>)} />;
+      
+      case 'FORMATTED_TEXT':
+        return <FormattedText {...(props as unknown as React.ComponentProps<typeof FormattedText>)} />;
       
       default:
         return (

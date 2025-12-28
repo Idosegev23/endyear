@@ -88,7 +88,7 @@ export function KpiBigNumber({
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.6, ease: 'easeOut' }}
-        className="text-gray-500 text-xl mb-6 font-medium tracking-wide"
+        className="text-gray-300 text-xl mb-6 font-medium tracking-wide uppercase"
       >
         {label}
       </motion.div>
@@ -140,7 +140,7 @@ export function KpiBigNumber({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.5 }}
-          className="text-gray-600 text-xl mt-6 text-center max-w-md"
+          className="text-gray-400 text-xl mt-6 text-center max-w-md"
         >
           {subtext}
         </motion.div>

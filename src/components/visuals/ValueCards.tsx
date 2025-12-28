@@ -31,7 +31,7 @@ export function ValueCards({ cards, title, color = '#DDB258' }: ValueCardsProps)
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="text-2xl font-bold text-center mb-8"
+          className="text-2xl font-bold text-center mb-8 text-white"
         >
           {title}
         </motion.h3>
@@ -53,9 +53,9 @@ export function ValueCards({ cards, title, color = '#DDB258' }: ValueCardsProps)
             whileHover={{ 
               y: -8, 
               scale: 1.02,
-              boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+              boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
             }}
-            className="relative p-6 rounded-2xl overflow-hidden cursor-default bg-white group"
+            className="relative p-6 rounded-2xl overflow-hidden cursor-default bg-white/10 backdrop-blur-sm border border-white/10 group"
             style={{ 
               borderRight: `4px solid ${color}`
             }}
@@ -137,7 +137,7 @@ export function ValueCards({ cards, title, color = '#DDB258' }: ValueCardsProps)
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 + index * 0.1 }}
-              className="text-gray-600 text-sm leading-relaxed relative z-10"
+              className="text-gray-400 text-sm leading-relaxed relative z-10"
             >
               {card.description}
             </motion.p>

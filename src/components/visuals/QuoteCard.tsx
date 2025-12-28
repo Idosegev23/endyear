@@ -72,7 +72,7 @@ export function QuoteCard({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.6 }}
-        className={`relative z-10 font-bold text-center leading-relaxed max-w-3xl ${
+        className={`relative z-10 font-bold text-center leading-relaxed max-w-3xl text-white ${
           isLarge ? 'text-5xl md:text-6xl' : 'text-3xl md:text-4xl'
         }`}
       >
@@ -116,7 +116,7 @@ export function QuoteCard({
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.1 }}
-              className="font-bold text-xl"
+              className="font-bold text-xl text-white"
             >
               {author}
             </motion.div>
@@ -125,7 +125,7 @@ export function QuoteCard({
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1.2 }}
-                className="text-gray-500"
+                className="text-gray-400"
               >
                 {role}
               </motion.div>

@@ -5,16 +5,18 @@
 @tailwind utilities;
 
 /* ===================================
-   CSS Custom Properties
+   CSS Custom Properties - Dark & Bold
 =================================== */
 :root {
-  --color-bg-base: #EBECEC;
-  --color-near-black: #040606;
-  --color-gold-main: #DDB258;
-  --color-gold-secondary: #AB8492;
+  --color-bg-base: #F5F5F5;
+  --color-near-black: #0A0A0A;
+  --color-dark-900: #111111;
+  --color-dark-800: #1A1A1A;
+  --color-dark-700: #2A2A2A;
+  --color-gold-main: #C9A04A;
+  --color-gold-accent: #D4AF37;
   --color-green-accent: #175933;
-  --color-deep-black: #0B0B0B;
-  --color-border: #E5E7EB;
+  --color-border: #E0E0E0;
 }
 
 /* ===================================

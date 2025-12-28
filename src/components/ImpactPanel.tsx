@@ -33,21 +33,21 @@ export function ImpactPanel({ expanded = false }: ImpactPanelProps) {
               backgroundPosition: ['0% 0%', '100% 100%'],
             }}
             transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
-            className="absolute inset-0 opacity-[0.03]"
+            className="absolute inset-0 opacity-[0.08]"
             style={{
-              backgroundImage: `radial-gradient(circle at 2px 2px, #DDB258 1px, transparent 0)`,
+              backgroundImage: `radial-gradient(circle at 2px 2px, #C9A04A 1px, transparent 0)`,
               backgroundSize: '48px 48px'
             }}
           />
 
-          {/* Floating shapes */}
+          {/* Floating shapes - dark */}
           <motion.div
             animate={{ 
               y: [0, -20, 0],
               rotate: [0, 5, 0]
             }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-20 left-20 w-24 h-24 rounded-3xl bg-gold-main/5"
+            className="absolute top-20 left-20 w-24 h-24 rounded-3xl bg-white/5"
           />
           <motion.div
             animate={{ 
@@ -55,7 +55,7 @@ export function ImpactPanel({ expanded = false }: ImpactPanelProps) {
               rotate: [0, -5, 0]
             }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            className="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-green-accent/5"
+            className="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-gold-main/10"
           />
 
           <motion.div
@@ -70,15 +70,15 @@ export function ImpactPanel({ expanded = false }: ImpactPanelProps) {
                 scale: [1, 1.05, 1],
               }}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-gold-main/20 to-gold-main/5 flex items-center justify-center"
+              className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10"
             >
               <svg className="w-12 h-12 text-gold-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
               </svg>
             </motion.div>
 
-            <h3 className="text-2xl font-bold mb-3">Impact Panel</h3>
-            <p className="text-gray-500 max-w-sm text-lg">
+            <h3 className="text-2xl font-bold mb-3 text-white">Impact Panel</h3>
+            <p className="text-gray-400 max-w-sm text-lg">
               שאלו שאלה והנתונים יופיעו כאן עם גרפיקות מרהיבות
             </p>
           </motion.div>
@@ -122,8 +122,8 @@ export function ImpactPanel({ expanded = false }: ImpactPanelProps) {
   return (
     <div className={`h-full relative overflow-hidden ${
       expanded 
-        ? 'bg-gradient-to-br from-white via-gray-50 to-white' 
-        : 'bg-white'
+        ? 'bg-gradient-to-br from-near-black via-dark-900 to-near-black' 
+        : 'bg-near-black'
     }`}>
       {/* Subtle grain overlay */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none grain-overlay" />
@@ -133,11 +133,11 @@ export function ImpactPanel({ expanded = false }: ImpactPanelProps) {
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="px-6 py-4 border-b border-gray-100 bg-white/80 backdrop-blur-sm"
+          className="px-6 py-4 border-b border-gray-800 bg-near-black/90 backdrop-blur-sm"
         >
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-gold-main animate-pulse" />
-            <h2 className="font-bold text-sm text-gray-600">Impact Panel</h2>
+            <h2 className="font-bold text-sm text-gray-400">Impact Panel</h2>
           </div>
         </motion.div>
       )}

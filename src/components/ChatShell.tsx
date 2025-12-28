@@ -120,47 +120,47 @@ export function ChatShell() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-bg-base">
-      {/* Header */}
-      <header className="glass px-6 py-3 flex items-center justify-between shrink-0 z-20">
+      {/* Header - Dark */}
+      <header className="bg-near-black px-6 py-3 flex items-center justify-between shrink-0 z-20">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setScene('lobby')}
-            className="text-gray-500 hover:text-near-black transition-colors"
+            className="text-gray-400 hover:text-white transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           <div className="flex items-center gap-3">
-            <img src="/logoblack.png" alt="LEADERS" className="h-5 w-auto" />
-            <span className="font-bold text-sm">LEADERS 2025</span>
+            <img src="/logo.png" alt="LEADERS" className="h-5 w-auto" />
+            <span className="font-bold text-sm text-white">LEADERS 2025</span>
           </div>
         </div>
         
         <div className="flex items-center gap-3">
           {/* Mode Toggle */}
           <div className="flex items-center gap-2 text-xs">
-            <span className={mode === 'admin' ? 'text-gold-main' : 'text-gray-400'}>
+            <span className={mode === 'admin' ? 'text-gold-main' : 'text-gray-500'}>
               Admin
             </span>
             <button
               onClick={() => setMode(mode === 'admin' ? 'show' : 'admin')}
               className={`w-8 h-4 rounded transition-colors ${
-                mode === 'show' ? 'bg-gold-main' : 'bg-gray-300'
+                mode === 'show' ? 'bg-gold-main' : 'bg-gray-600'
               }`}
             >
               <div className={`w-3 h-3 rounded bg-white shadow transform transition-transform ${
                 mode === 'show' ? 'translate-x-0.5' : 'translate-x-4'
               }`} />
             </button>
-            <span className={mode === 'show' ? 'text-gold-main' : 'text-gray-400'}>
+            <span className={mode === 'show' ? 'text-gold-main' : 'text-gray-500'}>
               Show
             </span>
           </div>
 
           <button
             onClick={() => setScene('vision2026')}
-            className="px-3 py-1.5 text-xs font-medium bg-white rounded border border-gray-200 hover:border-gold-main transition-colors"
+            className="px-3 py-1.5 text-xs font-medium bg-white/10 text-white rounded hover:bg-white/20 transition-colors"
           >
             2026
           </button>

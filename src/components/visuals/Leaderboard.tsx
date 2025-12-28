@@ -32,7 +32,7 @@ export function Leaderboard({ items, title, color = '#DDB258' }: LeaderboardProp
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="text-3xl font-bold text-center mb-8"
+        className="text-3xl font-bold text-center mb-8 text-white"
       >
         {title}
       </motion.h3>
@@ -94,7 +94,7 @@ export function Leaderboard({ items, title, color = '#DDB258' }: LeaderboardProp
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 + displayIndex * 0.1 }}
-                className={`font-bold text-center mb-1 ${isFirst ? 'text-xl' : 'text-lg'}`}
+                className={`font-bold text-center mb-1 text-white ${isFirst ? 'text-xl' : 'text-lg'}`}
               >
                 {item.name}
               </motion.div>
@@ -118,7 +118,7 @@ export function Leaderboard({ items, title, color = '#DDB258' }: LeaderboardProp
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.2 + displayIndex * 0.1 }}
-                  className="text-xs text-gray-500 text-center max-w-24 mb-3"
+                  className="text-xs text-gray-400 text-center max-w-24 mb-3"
                 >
                   {item.subtitle}
                 </motion.div>
@@ -179,16 +179,16 @@ export function Leaderboard({ items, title, color = '#DDB258' }: LeaderboardProp
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 2 + index * 0.1, duration: 0.4 }}
-              className="flex items-center justify-between py-4 px-5 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow"
+              className="flex items-center justify-between py-4 px-5 bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 hover:bg-white/15 transition-all"
             >
               <div className="flex items-center gap-4">
                 <span 
-                  className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-white text-sm"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-near-black text-sm"
                   style={{ backgroundColor: color }}
                 >
                   {item.rank}
                 </span>
-                <span className="font-semibold">{item.name}</span>
+                <span className="font-semibold text-white">{item.name}</span>
               </div>
               <span className="font-bold text-lg" style={{ color }}>
                 {typeof item.value === 'number' 

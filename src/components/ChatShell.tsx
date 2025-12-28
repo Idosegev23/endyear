@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { ChatMessage, TypingIndicator } from './ChatMessage';
 import { ImpactPanel } from './ImpactPanel';
-import { getNextQuestions, getOpeningQuestions, FlowQuestion } from '@/lib/flowQuestions';
+import { getOpeningQuestions, FlowQuestion } from '@/lib/flowQuestions';
 import { SuggestedQuestions, SuggestedQuestionsCompact } from './SuggestedQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
 
@@ -14,11 +14,8 @@ interface ChatApiResponse {
   intent_id: string;
   confidence: number;
   visual_payload: VisualPayload;
+  next_question: FlowQuestion | null;
   missing_fields: string[];
-  internal_debug?: {
-    rationale: string;
-    facts_used: string[];
-  };
 }
 
 export function ChatShell() {
@@ -26,7 +23,6 @@ export function ChatShell() {
   const [hasVisual, setHasVisual] = useState(false);
   const [askedIntents, setAskedIntents] = useState<string[]>([]);
   const [suggestedQuestions, setSuggestedQuestions] = useState<FlowQuestion[]>([]);
-  const [lastIntentId, setLastIntentId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -57,13 +53,6 @@ export function ChatShell() {
     setSuggestedQuestions(getOpeningQuestions());
   }, []);
 
-  // עדכן שאלות מוצעות אחרי כל תשובה
-  useEffect(() => {
-    if (lastIntentId && !isTyping) {
-      const nextQuestions = getNextQuestions(lastIntentId, askedIntents);
-      setSuggestedQuestions(nextQuestions);
-    }
-  }, [lastIntentId, askedIntents, isTyping]);
 
   useEffect(() => {
     setHasVisual(!!currentVisual && currentVisual.type !== 'QUOTE_CARD');
@@ -90,8 +79,7 @@ export function ChatShell() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
-          mode,
-          current_scene: 'chat'
+          askedIntents
         })
       });
 
@@ -107,10 +95,16 @@ export function ChatShell() {
       setCurrentVisual(data.visual_payload);
       setDebugInfo(data.intent_id, data.confidence);
       
-      // שמור את ה-intent ועדכן שאלות מוצעות
+      // עדכן intents ושאלה הבאה
       if (data.intent_id !== 'UNKNOWN' && data.intent_id !== 'ERROR') {
-        setLastIntentId(data.intent_id);
         setAskedIntents(prev => [...prev, data.intent_id]);
+      }
+      
+      // עדכן שאלה הבאה מהשרת
+      if (data.next_question) {
+        setSuggestedQuestions([data.next_question]);
+      } else {
+        setSuggestedQuestions([]);
       }
 
     } catch (error) {

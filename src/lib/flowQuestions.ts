@@ -1,4 +1,4 @@
-// סדר השאלות לפי התסריט
+// סדר השאלות לפי התסריט המדויק
 export interface FlowQuestion {
   id: string;
   question: string;
@@ -13,91 +13,96 @@ export const flowQuestions: FlowQuestion[] = [
   },
   {
     id: 'q2',
+    question: 'חפרת לי, תן תמציתי יותר',
+    intentId: 'YEAR_RECAP_SHORT'
+  },
+  {
+    id: 'q3',
     question: 'מי היה לקוח הכיס העמוק שלנו?',
     intentId: 'TOP_REVENUE_CLIENT_2025'
   },
   {
-    id: 'q3',
+    id: 'q4',
     question: 'כמה כוסות קפה זה ההכנסות שלנו?',
     intentId: 'COFFEE_TO_REVENUE'
   },
   {
-    id: 'q4',
+    id: 'q5',
     question: 'מה היה הרבעון הכי חזק?',
     intentId: 'STRONGEST_QUARTER'
   },
   {
-    id: 'q5',
+    id: 'q6',
     question: 'מי בילה הכי הרבה במטבח ליד הקפה?',
     intentId: 'COFFEE_CORNER_JOKE'
   },
   {
-    id: 'q6',
+    id: 'q7',
     question: 'איזה קמפיין שבר את הרשת?',
     intentId: 'VIRAL_CAMPAIGN_2025'
   },
   {
-    id: 'q7',
+    id: 'q8',
     question: 'אילו 3 מילים הופיעו הכי הרבה בפידבקים?',
     intentId: 'CLIENT_FEEDBACK_KEYWORDS'
   },
   {
-    id: 'q8',
+    id: 'q9',
     question: 'כמה זמן חסכנו עם AI?',
     intentId: 'AI_TIME_SAVINGS'
   },
   {
-    id: 'q9',
+    id: 'q10',
     question: 'מה היה הפרויקט הכי מורכב טכנולוגית?',
     intentId: 'ENZO_SODASTREAM'
   },
   {
-    id: 'q10',
+    id: 'q11',
     question: 'מה ה-ROI הכי מרשים שעשינו?',
     intentId: 'ROI_BEST'
   },
   {
-    id: 'q11',
+    id: 'q12',
     question: 'מה המשפט הכי נפוץ בפגישות וידאו?',
     intentId: 'MOST_COMMON_MEETING_PHRASE'
   },
   {
-    id: 'q12',
+    id: 'q13',
     question: 'כמה אירועי חברה וגיבושים היו?',
     intentId: 'CULTURE_EVENTS'
   },
   {
-    id: 'q13',
-    question: 'איזה צוות שיאני הביצועים?',
+    id: 'q14',
+    question: 'איזה צוות מחזיק בתואר שיאני הביצועים?',
     intentId: 'TOP_PERFORMING_TEAM'
   },
   {
-    id: 'q14',
+    id: 'q15',
     question: 'מה ה-DNA של לידרס?',
     intentId: 'COMPANY_DNA'
   },
   {
-    id: 'q15',
+    id: 'q16',
     question: 'מתי הכי פחות פרודוקטיביים?',
     intentId: 'LEAST_PRODUCTIVE_TIME'
   },
   {
-    id: 'q16',
+    id: 'q17',
     question: 'איפה לידרס תהיה בסוף 2026?',
     intentId: 'GROWTH_FORECAST'
   },
   {
-    id: 'q17',
+    id: 'q18',
     question: 'מי היועצים שמלווים אותנו?',
     intentId: 'CONSULTANTS'
   },
   {
-    id: 'q18',
+    id: 'q19',
     question: 'ספר לי על לידרס ב-2026',
     intentId: 'VISION_2026_INTRO'
   },
   {
-    id: 'q19',
+    id: 'q20',
     question: 'תכתוב שיר ראפ לסיכום!',
     intentId: 'RAP_SUMMARY'
   }
@@ -127,4 +132,3 @@ export function getNextQuestions(lastIntentId: string | null, askedIntents: stri
 export function getOpeningQuestions(): FlowQuestion[] {
   return flowQuestions.slice(0, 3);
 }
-

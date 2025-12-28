@@ -12,7 +12,15 @@ export const intents: Intent[] = [
     id: 'YEAR_RECAP_HEADLINES',
     title: 'ראשי פרקים לסיכום שנה',
     triggers: ['ראשי פרקים', 'סיכום שנה', 'תן לי נושאים', 'בוקר טוב'],
-    response_style: 'רשימה מסודרת וברורה',
+    response_style: 'רשימה מסודרת וברורה - 9 נקודות',
+    visual_type: 'VALUE_CARDS',
+    data_paths: ['topics']
+  },
+  {
+    id: 'YEAR_RECAP_SHORT',
+    title: 'גרסת לא-חופר',
+    triggers: ['חפרת', 'תמציתי', 'קצר', 'מסקרן', 'לא חופר'],
+    response_style: 'קצר חד ומייצר סקרנות - 10 נקודות פאנצ׳',
     visual_type: 'VALUE_CARDS',
     data_paths: ['topics']
   },

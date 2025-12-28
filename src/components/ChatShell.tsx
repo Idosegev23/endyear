@@ -234,49 +234,87 @@ export function ChatShell() {
         >
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-4 scrollbar-hide">
-            {messages.length === 0 && (
+            {messages.length === 0 && suggestedQuestions.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="h-full flex flex-col items-center justify-center text-center px-4"
               >
-                <div className="w-12 h-12 mb-4 rounded-lg bg-gold-main/10 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gold-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold mb-2">בוקר טוב</h3>
-                <p className="text-gray-500 text-sm mb-6 max-w-xs">
-                  שאלו אותי על הכנסות, קמפיינים, אנשים, חדשנות
-                </p>
-                <div className="flex flex-col gap-2 w-full max-w-sm">
-                  {suggestedQuestions.slice(0, 3).map((q, index) => (
-                    <motion.button
-                      key={q.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.8 + index * 0.1 }}
-                      whileHover={{ scale: 1.02, x: -5 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleSuggestionClick(q)}
-                      className="group relative px-5 py-3.5 bg-white rounded-xl text-sm text-gray-700 hover:text-near-black transition-all shadow-sm hover:shadow-md text-right border-2 border-transparent hover:border-gold-main/50 overflow-hidden"
-                    >
-                      {/* Shimmer */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-main/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                {/* Welcome */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="mb-8"
+                >
+                  <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-gold-main/20 to-gold-main/5 flex items-center justify-center mx-auto">
+                    <svg className="w-8 h-8 text-gold-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">בוקר טוב</h3>
+                  <p className="text-gray-500 text-sm">
+                    מוכנים לסיכום השנה?
+                  </p>
+                </motion.div>
+
+                {/* Itamar starts - single question */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="w-full max-w-md"
+                >
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1 }}
+                    className="text-sm text-gray-400 mb-3"
+                  >
+                    איתמר מתחיל...
+                  </motion.p>
+
+                  <motion.button
+                    initial={{ opacity: 0, x: 30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1.2, type: 'spring', stiffness: 200 }}
+                    whileHover={{ scale: 1.02, x: -5 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleSuggestionClick(suggestedQuestions[0])}
+                    className="group w-full flex items-start gap-3 text-right"
+                  >
+                    {/* Itamar Avatar */}
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-near-black to-gray-800 flex items-center justify-center text-white font-bold shrink-0 shadow-lg">
+                      א
+                    </div>
+
+                    {/* Question bubble */}
+                    <div className="flex-1 relative bg-white border-2 border-gray-200 rounded-2xl rounded-tr-sm px-5 py-4 transition-all group-hover:border-gold-main group-hover:shadow-xl overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-main/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                       
-                      <span className="relative font-medium">{q.question}</span>
-                      
-                      {/* Arrow */}
-                      <motion.span
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-gold-main opacity-0 group-hover:opacity-100 transition-opacity"
+                      <span className="relative text-base font-medium text-gray-800 group-hover:text-near-black transition-colors">
+                        {suggestedQuestions[0].question}
+                      </span>
+
+                      <motion.div
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gold-main opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <svg className="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                      </motion.span>
-                    </motion.button>
-                  ))}
-                </div>
+                      </motion.div>
+                    </div>
+                  </motion.button>
+
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.8 }}
+                    className="text-xs text-gray-400 mt-3 text-center"
+                  >
+                    לחצו להתחיל או הקלידו שאלה משלכם
+                  </motion.p>
+                </motion.div>
               </motion.div>
             )}
 

@@ -319,7 +319,7 @@ function BotMessageBubble({
             className="mr-13 rounded-2xl overflow-hidden bg-gray-900 border border-gray-800"
             style={{ marginRight: '52px' }}
           >
-            <div className="h-[400px]">
+            <div className="max-h-[500px] overflow-y-auto scrollbar-hide">
               <ImpactPanel expanded={true} />
             </div>
           </motion.div>

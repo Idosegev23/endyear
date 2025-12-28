@@ -18,7 +18,7 @@ export function AnimatedList({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="h-full flex flex-col p-8 overflow-hidden bg-deep-black text-white"
+      className="flex flex-col p-6 bg-deep-black text-white"
     >
       {/* Title */}
       {title && (
@@ -34,7 +34,7 @@ export function AnimatedList({
       )}
 
       {/* Animated Items List */}
-      <div className="flex-1 flex flex-col justify-center gap-3 max-w-2xl mx-auto w-full">
+      <div className="flex flex-col gap-3 max-w-2xl mx-auto w-full">
         {items.map((item, index) => (
           <motion.div
             key={index}

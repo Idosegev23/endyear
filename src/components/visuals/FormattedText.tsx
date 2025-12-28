@@ -23,7 +23,7 @@ export function FormattedText({
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="h-full flex flex-col p-8 overflow-y-auto bg-deep-black text-white scrollbar-hide"
+      className="flex flex-col p-6 bg-deep-black text-white"
     >
       {/* Main Title */}
       {title && (
@@ -39,7 +39,7 @@ export function FormattedText({
       )}
 
       {/* Sections */}
-      <div className="flex-1 space-y-6">
+      <div className="space-y-6">
         {sections.map((section, index) => (
           <motion.div
             key={index}

@@ -47,6 +47,7 @@ export function ChatShell() {
   const [typingMessageId, setTypingMessageId] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const botMessagesEndRef = useRef<HTMLDivElement>(null);
+  const botContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
   const {
@@ -219,7 +220,7 @@ export function ChatShell() {
 
         {/* RIGHT - Bot */}
         <div className="w-[65%] bg-deep-black flex flex-col overflow-hidden">
-          <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
+          <div ref={botContainerRef} className="flex-1 overflow-y-auto p-6 scrollbar-hide">
             <div className="space-y-8 pb-8">
               {messages.filter(m => m.role === 'bot').map((msg) => (
                 <BotMessageBubble 
@@ -227,6 +228,7 @@ export function ChatShell() {
                   message={msg}
                   isTyping={msg.id === typingMessageId}
                   onTypingComplete={() => handleTypingComplete(msg.id)}
+                  scrollRef={botContainerRef}
                 />
               ))}
               
@@ -296,14 +298,27 @@ function VisualRenderer({ visual }: { visual: VisualPayload }) {
 function BotMessageBubble({ 
   message, 
   isTyping, 
-  onTypingComplete 
+  onTypingComplete,
+  scrollRef
 }: { 
   message: Message; 
   isTyping: boolean;
   onTypingComplete: () => void;
+  scrollRef?: React.RefObject<HTMLDivElement>;
 }) {
   const [displayedText, setDisplayedText] = useState('');
   const [showVisual, setShowVisual] = useState(false);
+  const bubbleRef = useRef<HTMLDivElement>(null);
+
+  // גלילה הדרגתית בזמן ההקלדה
+  const scrollToBottom = () => {
+    if (scrollRef?.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     if (!isTyping) {
@@ -315,16 +330,26 @@ function BotMessageBubble({
     setDisplayedText('');
     setShowVisual(false);
     let index = 0;
+    let scrollCounter = 0;
     
     const interval = setInterval(() => {
       if (index < message.text.length) {
         setDisplayedText(message.text.slice(0, index + 1));
         index++;
+        scrollCounter++;
+        
+        // גולל כל 10 תווים או בכל שורה חדשה
+        if (scrollCounter >= 10 || message.text[index - 1] === '\n') {
+          scrollToBottom();
+          scrollCounter = 0;
+        }
       } else {
         clearInterval(interval);
+        scrollToBottom();
         setTimeout(() => {
           setShowVisual(true);
           onTypingComplete();
+          scrollToBottom();
         }, 300);
       }
     }, 15);

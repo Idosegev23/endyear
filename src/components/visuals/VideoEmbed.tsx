@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 interface VideoEmbedProps {
   url: string;
@@ -19,6 +19,13 @@ export function VideoEmbed({
   color = '#DDB258'
 }: VideoEmbedProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Check if it's a local video file
+  const isLocalVideo = url.startsWith('/') && (url.endsWith('.mp4') || url.endsWith('.mov') || url.endsWith('.webm'));
+  const isInstagram = url.includes('instagram.com');
+  const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
 
   // Extract video ID for thumbnail
   const getYoutubeThumbnail = () => {
@@ -26,11 +33,27 @@ export function VideoEmbed({
     if (youtubeMatch) {
       return `https://img.youtube.com/vi/${youtubeMatch[1]}/maxresdefault.jpg`;
     }
-    return thumbnail || '/images/video-placeholder.jpg';
+    return thumbnail || null;
   };
 
-  const isInstagram = url.includes('instagram.com');
-  const thumbUrl = getYoutubeThumbnail();
+  const thumbUrl = isYoutube ? getYoutubeThumbnail() : thumbnail;
+
+  const handlePlay = () => {
+    if (isLocalVideo) {
+      setIsPlaying(true);
+      setIsModalOpen(true);
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setIsPlaying(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+  };
 
   return (
     <>
@@ -46,18 +69,35 @@ export function VideoEmbed({
           transition={{ delay: 0.2, duration: 0.6, type: 'spring' }}
           whileHover={{ scale: 1.02, y: -5 }}
           className="relative w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl cursor-pointer group"
-          onClick={() => setIsModalOpen(true)}
+          onClick={handlePlay}
         >
-          {/* Thumbnail */}
+          {/* Thumbnail / Video Preview */}
           <div className="aspect-video bg-gray-900 relative overflow-hidden">
-            <motion.img
-              src={thumbUrl}
-              alt={title || 'Video'}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = '/images/video-placeholder.jpg';
-              }}
-            />
+            {isLocalVideo ? (
+              // Local video - show first frame as thumbnail
+              <video
+                src={url}
+                className="w-full h-full object-cover"
+                muted
+                playsInline
+                preload="metadata"
+              />
+            ) : thumbUrl ? (
+              <motion.img
+                src={thumbUrl}
+                alt={title || 'Video'}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                <svg className="w-20 h-20 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            )}
 
             {/* Overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -123,6 +163,21 @@ export function VideoEmbed({
                 <span className="text-sm font-medium">Instagram</span>
               </motion.div>
             )}
+
+            {/* Local video badge */}
+            {isLocalVideo && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.7, type: 'spring' }}
+                className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2"
+              >
+                <svg className="w-5 h-5 text-gold-main" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
+                </svg>
+                <span className="text-sm font-medium">LEADERS</span>
+              </motion.div>
+            )}
           </div>
         </motion.div>
 
@@ -146,15 +201,15 @@ export function VideoEmbed({
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
             style={{ backgroundColor: 'rgba(11, 11, 11, 0.95)' }}
-            onClick={() => setIsModalOpen(false)}
+            onClick={handleModalClose}
           >
             {/* Close button */}
             <motion.button
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.3 }}
-              className="absolute top-6 left-6 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
-              onClick={() => setIsModalOpen(false)}
+              className="absolute top-6 left-6 w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors z-10"
+              onClick={handleModalClose}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -167,10 +222,20 @@ export function VideoEmbed({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: 'spring', bounce: 0.3 }}
-              className="w-full max-w-4xl aspect-video rounded-2xl overflow-hidden"
+              className="w-full max-w-5xl aspect-video rounded-2xl overflow-hidden bg-black"
               onClick={(e) => e.stopPropagation()}
             >
-              {isInstagram ? (
+              {isLocalVideo ? (
+                // Local video player
+                <video
+                  ref={videoRef}
+                  src={url}
+                  className="w-full h-full object-contain"
+                  controls
+                  autoPlay
+                  playsInline
+                />
+              ) : isInstagram ? (
                 <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 text-white">
                   <p className="text-xl mb-6">פתיחה באינסטגרם</p>
                   <a

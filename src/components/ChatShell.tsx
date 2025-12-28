@@ -6,6 +6,7 @@ import { useAppStore } from '@/lib/store';
 import { ChatMessage, TypingIndicator } from './ChatMessage';
 import { ImpactPanel } from './ImpactPanel';
 import { getNextQuestions, getOpeningQuestions, FlowQuestion } from '@/lib/flowQuestions';
+import { SuggestedQuestions, SuggestedQuestionsCompact } from './SuggestedQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
 
 interface ChatApiResponse {
@@ -123,15 +124,54 @@ export function ChatShell() {
     }
   };
 
-  const handleSuggestionClick = (question: FlowQuestion) => {
-    setInput(question.question);
-    // Submit automatically
-    setTimeout(() => {
-      const form = document.querySelector('form');
-      if (form) {
-        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  const handleSuggestionClick = async (question: FlowQuestion) => {
+    if (isTyping) return;
+    
+    // Add user message immediately
+    addMessage({
+      role: 'user',
+      text: question.question
+    });
+
+    setIsTyping(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: question.question,
+          mode,
+          current_scene: 'chat'
+        })
+      });
+
+      const data: ChatApiResponse = await response.json();
+
+      addMessage({
+        role: 'bot',
+        text: data.answer_text,
+        intentId: data.intent_id,
+        visualPayload: data.visual_payload
+      });
+
+      setCurrentVisual(data.visual_payload);
+      setDebugInfo(data.intent_id, data.confidence);
+      
+      if (data.intent_id !== 'UNKNOWN' && data.intent_id !== 'ERROR') {
+        setLastIntentId(data.intent_id);
+        setAskedIntents(prev => [...prev, data.intent_id]);
       }
-    }, 100);
+
+    } catch (error) {
+      console.error('Chat error:', error);
+      addMessage({
+        role: 'bot',
+        text: 'משהו השתבש. ננסה שוב?'
+      });
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   return (
@@ -209,15 +249,32 @@ export function ChatShell() {
                 <p className="text-gray-500 text-sm mb-6 max-w-xs">
                   שאלו אותי על הכנסות, קמפיינים, אנשים, חדשנות
                 </p>
-                <div className="flex flex-col gap-2 w-full max-w-xs">
-                  {suggestedQuestions.slice(0, 3).map((q) => (
-                    <button
+                <div className="flex flex-col gap-2 w-full max-w-sm">
+                  {suggestedQuestions.slice(0, 3).map((q, index) => (
+                    <motion.button
                       key={q.id}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.8 + index * 0.1 }}
+                      whileHover={{ scale: 1.02, x: -5 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => handleSuggestionClick(q)}
-                      className="px-4 py-2.5 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-near-black transition-colors shadow-sm text-right"
+                      className="group relative px-5 py-3.5 bg-white rounded-xl text-sm text-gray-700 hover:text-near-black transition-all shadow-sm hover:shadow-md text-right border-2 border-transparent hover:border-gold-main/50 overflow-hidden"
                     >
-                      {q.question}
-                    </button>
+                      {/* Shimmer */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-main/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                      
+                      <span className="relative font-medium">{q.question}</span>
+                      
+                      {/* Arrow */}
+                      <motion.span
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-gold-main opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <svg className="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </motion.span>
+                    </motion.button>
                   ))}
                 </div>
               </motion.div>
@@ -230,30 +287,19 @@ export function ChatShell() {
               {isTyping && <TypingIndicator />}
             </AnimatePresence>
 
-            {/* Suggested Questions - appear after bot response */}
-            {!isTyping && messages.length > 0 && suggestedQuestions.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="mt-4 mb-2"
-              >
-                <p className="text-xs text-gray-400 mb-2 px-1">שאלות המשך:</p>
-                <div className="flex flex-wrap gap-2">
-                  {suggestedQuestions.map((q, index) => (
-                    <motion.button
-                      key={q.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.6 + index * 0.1 }}
-                      onClick={() => handleSuggestionClick(q)}
-                      className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-gold-main hover:text-near-black hover:bg-gold-main/5 transition-all shadow-sm"
-                    >
-                      {q.question}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
+            {/* Suggested Questions - Itamar style */}
+            {hasVisual ? (
+              <SuggestedQuestionsCompact
+                questions={suggestedQuestions}
+                onSelect={handleSuggestionClick}
+                isVisible={!isTyping && messages.length > 0}
+              />
+            ) : (
+              <SuggestedQuestions
+                questions={suggestedQuestions}
+                onSelect={handleSuggestionClick}
+                isVisible={!isTyping && messages.length > 0}
+              />
             )}
             
             <div ref={messagesEndRef} />

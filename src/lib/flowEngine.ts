@@ -1,4 +1,4 @@
-// Flow Engine - No AI needed, just smart pattern matching
+// Flow Engine - תשובות בדיוק לפי התסריט
 import { flowQuestions, FlowQuestion } from './flowQuestions';
 import dataPack from '@/data/leaders-2025.json';
 
@@ -12,118 +12,278 @@ export interface FlowResponse {
   nextQuestion: FlowQuestion | null;
 }
 
-// תגובות חיוביות שמפעילות את ה-intent הבא
-const POSITIVE_RESPONSES = [
-  'כן', 'יאלה', 'בוא', 'בואו', 'נתחיל', 'מתחילים', 'אוקי', 'ok', 'בסדר',
-  'כן בוא', 'יאלה בוא', 'בטח', 'נשמע טוב', 'מעולה', 'יופי', 'קדימה',
-  'כן נתחיל', 'בוא נתחיל', 'מוכן', 'מוכנים', 'תמשיך', 'הלאה', 'ספר',
-  'ספר לנו', 'תן', 'תגיד', 'דבר', 'אמור', 'הראה', 'תראה', 'בינוני',
-  'קטן', 'גדול', 'הפוך'
-];
+// מפת Intent לתשובות - בדיוק לפי התסריט
+const INTENT_RESPONSES: Record<string, (data: typeof dataPack) => string> = {
+  
+  // שאלה 1: ראשי פרקים
+  'YEAR_RECAP_HEADLINES': () => `בוקר טוב!
+להלן ראשי פרקים מסודרים וברורים לסיכום שנת 2025 לכלל עובדי החברה:
 
-// מפת Intent לתשובות מובנות
-const INTENT_RESPONSES: Record<string, (data: typeof dataPack) => FlowResponse['answerText']> = {
-  'YEAR_RECAP_HEADLINES': () => `קיבלתי!\nהנה ראשי פרקים לסיכום 2025:\n\n1. פתיחה - שנה שלא מובנת מאליה\n2. היעדים שהצבנו מול מה שבפועל קרה\n3. אבני דרך והישגים מרכזיים\n4. חדשנות, ניסוי וטעייה\n5. אנשים ותרבות ארגונית\n6. אתגרים והתמודדויות\n7. התפתחות וצמיחה אישית\n8. מבט קדימה - 2026\n9. תודה וסגירה`,
+1. פתיחה - שנה שלא מובנת מאליה
+תודה אישית לכל עובד/ת
+הקשר בין העשייה היומיומית להצלחת החברה
+משפט מסכם על רוח השנה
 
-  'YEAR_RECAP_SHORT': () => `קיבלתי, גרסת הלא-חופר:\n\n1. מה חשבנו שתהיה 2025 - ומה היא עשתה לנו בפועל\n2. 3 דברים שעבדו הרבה יותר ממה שציפינו\n3. 2 טעויות יקרות - ולמה הן שוות זהב\n4. רגע אחד שאם לא היינו שם - הוא לא היה קורה\n5. אנשים שעשו מעבר להגדרת התפקיד\n6. משהו אחד שהפסקנו לעשות - והשתפרנו\n7. אמת קצרה על עומסים, לחץ ואיך שרדנו\n8. מה אסור לנו לאבד גם כשגדלים\n9. משפט אחד על 2026 שלא נאמר עדיין`,
+2. היעדים שהצבנו מול מה שבפועל קרה
+היעדים המרכזיים לשנת 2025
+מה הושג במלואו
+מה הושג חלקית
+מה לא הושג - ולמה זה לגיטימי
 
+3. אבני דרך והישגים מרכזיים
+פרויקטים משמעותיים
+לקוחות / שיתופי פעולה חדשים
+קמפיינים / מוצרים / תהליכים שבלטו
+רגעי שיא של גאוות יחידה
+
+4. חדשנות, ניסוי וטעייה
+דברים חדשים שניסינו השנה
+מה עבד במיוחד
+מה פחות - ומה למדנו מזה
+תרבות של אומץ ויציאה מאזור הנוחות
+
+5. אנשים ותרבות ארגונית
+חיבורים שנוצרו בין צוותים
+דוגמאות לעבודת צוות יוצאת דופן
+מנהלים ועובדים שהובילו ערכים ולא רק תוצאות
+איך נראית "החברה שלנו" מבפנים היום
+
+6. אתגרים והתמודדויות
+אתגרים מקצועיים / שוק / עומסים
+איך התמודדנו כארגון
+מה למדנו על עצמנו בדרך
+
+7. התפתחות וצמיחה אישית
+למידה, הכשרות, קידומים
+אחריות שנלקחה מעבר להגדרה הרשמית
+צמיחה אישית כחלק מהצלחת החברה
+
+8. מבט קדימה - 2026
+כיוונים אסטרטגיים
+מה נרצה לשפר
+מה חשוב שנשמור
+למה יש למה לחכות
+
+9. תודה וסגירה
+תודה על מחויבות, מקצועיות ואנושיות
+מסר של אמון והמשך דרך משותפת
+משפט סיום מחזק / מעורר השראה`,
+
+  // שאלה 2: גרסה תמציתית
+  'YEAR_RECAP_SHORT': () => `קיבלתי!
+אז הנה גרסת ה-לא-חופר, קצר, חד, ומייצר סקרנות:
+
+סיכום 2025 - ראשי פרקים
+1. מה חשבנו שתהיה 2025 - ומה היא עשתה לנו בפועל
+2. 3 דברים שעבדו לנו הרבה יותר ממה שציפינו
+3. 2 טעויות יקרות - ולמה הן שוות זהב
+4. רגע אחד שאם לא היינו שם - הוא לא היה קורה
+5. אנשים שעשו מעבר להגדרת התפקיד (בלי שמות, כן עם קרדיט)
+6. משהו אחד שהפסקנו לעשות - והשתפרנו
+7. משהו אחד שאנחנו חייבים להפסיק ב-2026
+8. אמת קצרה על עומסים, לחץ ואיך שרדנו את זה
+9. מה אסור לנו לאבד גם כשגדלים
+10. משפט אחד על 2026 שלא נאמר עדיין`,
+
+  // שאלה 3: לקוח הכיס העמוק
   'TOP_REVENUE_CLIENT_2025': (data) => {
     const clients = data.finance.top_revenue_clients;
     const colgate = clients[0];
     const seacret = clients[1];
     const tourism = clients[2];
-    return `שאלה טריקית אבל מעניינת!\n\nהעבודה עם קולגייט הייתה בשנת 2024 סביב תקציב של ${(colgate.revenue_2024! / 1000000).toFixed(1)} מיליון שח.\nב-2025 התקציב קפץ ל-${(colgate.revenue_2025! / 1000000).toFixed(1)} מיליון שח - צמיחה של ${colgate.growth_pct}%!\n\nSeacret צמחה ב-${seacret.growth_pct}%.\n\nאבל הכוכב הכי מרשים? משרד התיירות עם קפיצה של ${tourism.growth_pct}%!\n\nכל הכבוד לצוותים של נועה, אלית ובתאל!`;
+    return `זו שאלה קצת טריקית אבל מעניינת מאוד!
+
+אני שם לב שהעבודה עם "קולגייט" הייתה בשנת 2024 סביב תקציב של ${(colgate.revenue_2024! / 1000000).toFixed(1)} מיליון שח.
+בשנת 2025 - התקציב קפץ ל-${(colgate.revenue_2025! / 1000000).toFixed(1)} מיליון שח מה שאומר שהפעילות שלו צמחה בכמעט ${colgate.growth_pct}% בשנה האחרונה.
+
+לגבי לקוחות בצמיחה - יש לציין את Seacret שעמד על תקציב פעילות של ${(seacret.revenue_2024! / 1000000).toFixed(1)} מיליון שח ב-2024,
+ובשנת 2025 התקציב כבר גדל ל-${(seacret.revenue_2025! / 1000000).toFixed(1)} מיליון. מדובר בכ-${seacret.growth_pct}% צמיחה!
+
+אבל הכוכב המרשים ביותר הוא משרד התיירות, שלמרות האתגר ב-2023 - לקוח שהצלחתם לפצח ולנהל בצורה די מרשימה עם קפיצה תקציבית של ${tourism.growth_pct}% משנת 2024 לשנת 2025!
+
+אז כל הכבוד לצוותים של נועה ואלית ובתאל שעשו עבודה מדהימה והצליחו להצמיח את הפעילות של הלקוחות שלהן!`;
   },
 
+  // שאלה 4: קפה ארומה - שאלת המשך
+  'COFFEE_SIZE_QUESTION': () => `זה תלוי איזה גודל קפה?
+הפוך קטן עולה 10 שח, בינוני 13 שח וגדול עולה 16 שח.
+איזה גודל קפה תרצה?`,
+
+  // שאלה 4: התשובה לקפה
   'COFFEE_TO_REVENUE': (data) => {
     const revenue = data.finance.total_revenue_2025;
     const price = data.finance.coffee_calculation.aroma_medium_price;
     const cups = data.finance.coffee_calculation.total_cups;
     const perEmployee = data.finance.coffee_calculation.cups_per_employee;
-    return `אז סך ההכנסות של LEADERS ב-2025 עמדו על מעל ${(revenue / 1000000)} מיליון שח.\n\nאם נחלק את זה ב-${price} שח לכוס בינוני בארומה:\n${cups.toLocaleString()} כוסות!\n\nלחלק ל-${data.company.employees_count} עובדים = ${perEmployee.toLocaleString()} כוסות לכל עובד.\n\nאגב, מדובר בהמון קפאין שיביא המון יעילות!`;
+    return `אז סך ההכנסות של LEADERS ב-2025 עמדו על מעל ${revenue / 1000000} מיליון,
+אם נחלק את זה ב-${price} שח זה אומר שאנחנו יכולים לקנות ${cups.toLocaleString()} כוסות!
+אם נחלק את זה לכמות העובדים שלנו שהיא ${data.company.employees_count} - אנחנו מדברים על ${perEmployee.toLocaleString()} כוסות לכל עובד.
+
+אגב, מדובר בהמון קפאין שיביא המון יעילות!`;
   },
 
+  // שאלה 5: הרבעון הכי חזק
   'STRONGEST_QUARTER': (data) => {
     const deal = data.finance.strongest_quarter_deal;
-    return `הרבעון הכי חזק בשנת 2025 היה רבעון ${data.finance.strongest_quarter.replace('Q', '')}.\n\nהעסקה החזקה ביותר הייתה עם ${deal.client} - מותגי הרכב ${deal.brands.join(' ו')}.\n\nמשפיענים: ${deal.influencers.join(', ')}\n\n${deal.team_credits.join('\n')}`;
+    return `הרבעון הכי חזק בשנת 2025 היה דווקא רבעון 3.
+זה רבעון שהביא איתו כמה עסקאות גדולות אבל החזקה מביניהן הייתה בעבודה עם ${deal.client} -
+מותגי הרכב ${deal.brands.join(' ו')} איתם יצאנו להפקות מדהימות שהיו מוצלחות במיוחד.
+
+הייתה פה עבודה מעולה על ליהוק של משפיענים מעניינים, ביניהם - ${deal.influencers.join(', ')}.
+היה שם קריאייטיב מעולה שיצא מהקופסא, מהלכי מדיה תומכים של יואב, וניהול לקוח ברמה גבוהה מאוד של יובל רפאל!`;
   },
 
+  // שאלה 6: מי במטבח
   'COFFEE_CORNER_JOKE': (data) => {
     const joke = data.culture.coffee_corner_joke;
-    return `הנתונים מראים עלייה חריגה בצריכת הקפאין באזור השולחן של ${joke.most_coffee} אחרי שהתחלפו פולי הקפה.\n\nמומלץ לבדוק אם הוא ישן בלילה.\n\nלגבי זמן בפינת הקפה - ${joke.previous_champion} הייתה מספר אחת אבל ${joke.previous_note}.`;
+    return `הנתונים מראים עלייה חריגה בצריכת הקפאין באזור השולחן של ${joke.most_coffee} אחרי שהתחלפו פולי הקפה.
+מומלץ לבדוק אם הוא ישן בלילה.
+
+לגבי זמן בפינת הקפה - ${joke.previous_champion} הייתה מספר אחת אבל מאז שהיא לא איתנו - הכורסאות שם די פנויות.`;
   },
 
+  // שאלה 7: קמפיין ויראלי
   'VIRAL_CAMPAIGN_2025': (data) => {
     const campaign = data.campaigns.viral_campaign_2025;
-    return `ללא ספק המהלך של ${campaign.name} היה הקמפיין הכי ויראלי של LEADERS ב-2025!\n\n${campaign.top_influencer} הביאה יותר מ-${campaign.views.toLocaleString()} חשיפות!`;
+    return `שאלה מעולה!
+ללא ספק המהלך של ${campaign.name} היה הקמפיין הכי ויראלי של LEADERS ב-2025.
+אבל אם נהיה מדויקים, ${campaign.top_influencer} הביאה יותר מ-${campaign.views.toLocaleString()} חשיפות שעלו בתוצרי הקמפיין של אקספנג מבית פריזבי.`;
   },
 
+  // שאלה 8: מילות פידבק
   'CLIENT_FEEDBACK_KEYWORDS': (data) => {
     const keywords = data.campaigns.client_feedback_keywords;
-    return `אוקיי, אז המילה "${keywords[0].word}" ${keywords[0].note} חזרה על עצמה הכי הרבה פעמים.\n\nאחריה המילה "${keywords[1].word}"\n\nואחריה המילה "${keywords[2].word}" (${keywords[2].context})`;
+    return `אוקיי,
+אז המילה "${keywords[0].word}" ${keywords[0].note} חזרה על עצמה הכי הרבה פעמים.
+אחריה המילה - "${keywords[1].word}"
+ואחריה המילה - "${keywords[2].word}" (בהקשר של ${keywords[2].context})`;
   },
 
+  // שאלה 9: חיסכון AI
   'AI_TIME_SAVINGS': (data) => {
     const ai = data.ai;
-    return `בזכות שימוש בכלי AI במחלקות השונות הצלחנו לחסוך ${ai.time_savings_pct}% בזמן העבודה.\n\n${ai.equivalent.weekly}!\n${ai.equivalent.yearly}!\n${ai.equivalent.hiring_equivalent}.\n\n${ai.summary}`;
+    return `בזכות שימוש בכלי AI במחלקות השונות הצלחנו לחסוך ב-${ai.time_savings_pct}% בזמן העבודה שלנו.
+בחישוב מהיר - מדובר בחיסכון של ${ai.equivalent.weekly}!
+אם מסתכלים על זה בראייה שנתית - ${ai.equivalent.yearly}!
+זה חסכון שווה ערך ל${ai.equivalent.hiring_equivalent}.
+
+כלומר - יצרתם כוח עבודה נוסף - בלי שכר, בלי גיוס ובלי עומס ניהולי.
+מטורף!`;
   },
 
+  // שאלה 10: פרויקט מורכב - אנזו
   'ENZO_SODASTREAM': (data) => {
     const enzo = data.campaigns.enzo_sodastream;
-    const team = enzo.team.map(t => `${t.name} - ${t.role}`).join('\n');
-    return `הפרויקט המורכב ביותר טכנולוגית היה ללא שום ספק מהלך השקת ה${enzo.name}.\n\n${enzo.description}:\n${enzo.highlights.slice(0, 3).join('\n')}\n\nהצוות:\n${team}\n\nציטוט מ${enzo.client_quote.from} ב${enzo.client_quote.time}: "${enzo.client_quote.word}"`;
+    return `הפרויקט המורכב ביותר טכנולוגית שעשיתם היה ללא שום ספק מהלך השקת ה"אנזו" של סודה סטרים.
+לא צריך לנתח יותר מידי - הצלחתם לגעת בעולם חדש, טכנולוגי, חדשני, שמבוסס בינה מלאכותית,
+היה שם קריאייטיב שונה שנתן מענה לחלומות של עמית וקלע בול למה שהיא חיפשה.
+
+לקראת השקת מכשיר ה-SodaStream enso היוקרתי, יצרנו מהלך אינטראקטיבי ובנינו אתר עם ממשק AI ייחודי.
+הגולשים הוזמנו להקליד מילים חופשיות, וה-AI יצר עבורם פרשנות מאוירת וחדשנית של מכשיר ה-Enso בסביבה יצירתית לבחירתם.
+התוצרים הוצגו בגלריה פתוחה שאפשרה צפייה, לייקים ושיתוף בין המשתתפים - ויצרה חוויית השקה חיה, מעורבת ודינמית.
+
+מה שיותר יפה היה שכמות אנשי הצוות שעבדו על המהלך הייתה מצומצמת מאוד:
+${enzo.team.map(t => `${t.name} - ${t.role}`).join('\n')}
+
+התוצאה הייתה מהממת, ואצטט את ${enzo.client_quote.from} בהודעה שנשלחה ב${enzo.client_quote.time} לקבוצה:
+"${enzo.client_quote.word}"`;
   },
 
+  // שאלה 11: ROI
   'ROI_BEST': (data) => {
     const roi = data.finance.roi_best;
-    return `ב${roi.month} עבדתם עם ${roi.client} בצורה ממוקדת ומדויקת.\n\nכל שקל שהושקע החזיר פי ${roi.roi}!\n\nROI ${roi.roi}.\n\n${roi.description}`;
+    return `ב${roi.month} עבדתם עם ${roi.client} בצורה ממוקדת ומדויקת עם מטרה עסקית ברורה.
+בפועל, כל שקל שהושקע במהלכי המדיה והמשפיעניות החזיר פי ${roi.roi}, ROI ${roi.roi}.
+מעבר למספר, ${roi.description}`;
   },
 
+  // שאלה 12: משפט נפוץ
   'MOST_COMMON_MEETING_PHRASE': (data) => {
-    return `תשמחו לגלות שהמשפט הנפוץ ביותר שנאמר בפגישות הוידאו שלכם היה:\n\n"${data.culture.most_common_meeting_phrase}"`;
+    return `תשמחו לגלות שהמשפט הנפוץ ביותר שנאמר בפגישות הוידאו שלכם היה:
+
+"${data.culture.most_common_meeting_phrase}"`;
   },
 
+  // שאלה 13: אירועי חברה
   'CULTURE_EVENTS': (data) => {
     const culture = data.culture;
-    return `אז נראה שאתם בלידרס אוהבים ממש לחגוג!\n\nחמישי שמח: ${culture.thursday_happy_count} - הרוב היה ${culture.thursday_happy_highlight}\n\nאירועי חברה: ${culture.company_events.map(e => e.name).join(', ')}\n\n${culture.volunteering_description}`;
+    return `אז נראה שאתם בלידרס אוהבים ממש לחגוג, אתחיל מהקטן -
+
+חמישי שמח - היו בסך הכל ${culture.thursday_happy_count} כאלה כשהרוב הבולט היה ${culture.thursday_happy_highlight}.
+
+אירועי חברה - ${culture.company_events.map(e => e.name).join(', ')}
+
+${culture.volunteering_description}`;
   },
 
+  // שאלה 14: צוות שיאני ביצועים
   'TOP_PERFORMING_TEAM': (data) => {
     const team = data.kpi.top_performing_team;
-    return `בעבודה מדויקת על ${team.client}, ${team.name} הצליח לייצר טירוף מכירות אמיתי!\n\nיעד: ${(team.target / 1000000).toFixed(0)} מיליון שח\nבפועל: ${(team.actual / 1000000).toFixed(2)} מיליון שח!\n\n${team.description}\n\n${team.result}`;
+    return `בעבודה מדויקת, חכמה ועקבית על ${team.client}, הצוות הצליח לייצר טירוף מכירות אמיתי דרך הנעת קהל באמצעות משפיעניות - בלי אפיליאציה ובלי עמלות מכר.
+
+קמפיין ההטבה של ${team.client}, שקורה פעמיים בשנה, הגיע עם יעד ברור של ${(team.target / 1000000).toFixed(0)} מיליון שח, ובפועל נסגר על ${(team.actual / 1000000).toFixed(2)} מיליון שח.
+זו קפיצה משמעותית מעל היעד, תוצאה של עבודה רציפה לאורך כל השנה שמייצרת שיח חיובי, נוכחות ונחשקות אמיתית למותג.
+
+הנתונים האלו לא רק מדברים בעד עצמם, אלא גם ${team.result} - הוכחה לכך שכאשר המיקוד הוא נחשקות שמניעה למכר, הביצועים כבר מגיעים לבד.`;
   },
 
+  // שאלה 15: DNA של לידרס
   'COMPANY_DNA': (data) => {
     const values = data.dna.values;
-    return `חמשת ערכי הליבה של לידרס:\n\n${values.map((v, i) => `${i + 1}. ${v.title}\n${v.description}`).join('\n\n')}`;
+    return `אנסה לזקק את זה לא כערכים "יפים על קיר", אלא כ-DNA שמתבטא בהחלטות, בקצב, ובאופן שבו הארגון חושב ופועל בפועל.
+
+כך הייתי מגדיר את חמשת ערכי הליבה של לידרס:
+
+${values.map((v, i) => `${i + 1}. ${v.title}
+${v.description}`).join('\n\n')}`;
   },
 
+  // שאלה 16: יום פחות פרודוקטיבי
   'LEAST_PRODUCTIVE_TIME': (data) => {
     const lpt = data.culture.least_productive_time;
-    return `${lpt.when} ${lpt.description}.\n\n${lpt.recommendation}`;
+    return `אז ${lpt.when} אתם הופכים ל${lpt.description}.
+אי אפשר לבוא אליכם כמובן בטענות אבל כנראה ש${lpt.recommendation}.`;
   },
 
+  // שאלה 17: תחזית צמיחה
   'GROWTH_FORECAST': (data) => {
     const s1 = data.vision_2026.growth_scenarios.scenario_1;
     const s2 = data.vision_2026.growth_scenarios.scenario_2;
-    return `שני תרחישים:\n\nתרחיש 1 - ${s1.name}:\nעובדים: ${s1.employees_growth} גידול\nהכנסות: ${s1.revenue_growth}, ${s1.multiplier}\n\nתרחיש 2 - ${s2.name}:\nעובדים: ${s2.employees_growth} גידול בלבד\nהכנסות: ${s2.revenue_growth}, ${s2.multiplier}\n${s2.notes}`;
+    return `בגלל שאנחנו נמצאים בזמנים מורכבים מאוד מבחינת עסקים וצמיחה, טכנולוגיה ויכולות, ישנם 2 תרחישים שיכולים לקרות:
+
+תרחיש 1: ${s1.name}
+עובדים: גידול מצטבר של כ-${s1.employees_growth} עד סוף 2026
+הכנסות: צמיחה של כ-${s1.revenue_growth} בשנה, סהכ ${s1.multiplier} מהיום
+${s1.notes}
+
+תרחיש 2: ${s2.name}
+עובדים: גידול מתון של כ-${s2.employees_growth} בלבד
+הכנסות: צמיחה של כ-${s2.revenue_growth} בשנה, סהכ ${s2.multiplier} מהיום
+${s2.notes}`;
   },
 
+  // שאלה 18: יועצים
   'CONSULTANTS': (data) => {
-    return `היועצים שמלווים אותנו:\n\n${data.consultants.map(c => `${c.name} - ${c.role}\n${c.description || ''}`).join('\n\n')}`;
+    return `${data.consultants.map(c => `${c.name}
+${c.role}
+${c.description || ''}`).join('\n\n')}`;
   },
 
+  // שאלה 19: חזון 2026
   'VISION_2026_INTRO': (data) => {
-    return `${data.vision_2026.intro}\n\nהיעדים:\n${data.vision_2026.targets.map(t => `- ${t}`).join('\n')}`;
+    return `${data.vision_2026.intro}
+
+${data.vision_2026.bullets.map(b => `- ${b}`).join('\n')}`;
   },
 
+  // שאלה 20: שיר ראפ
   'RAP_SUMMARY': (data) => {
     return data.rap_summary.lyrics;
   }
 };
 
 // Visual payloads לכל intent
-const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['visualPayload']> = {
+const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; props: Record<string, unknown> }> = {
   'YEAR_RECAP_HEADLINES': (data) => ({
     type: 'VALUE_CARDS',
     props: {
@@ -136,7 +296,7 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
     type: 'QUOTE_CARD',
     props: {
       quote: 'גרסת הלא-חופר',
-      author: 'סיכום תמציתי שמייצר סקרנות'
+      author: '10 נקודות שמייצרות סקרנות'
     }
   }),
 
@@ -153,6 +313,14 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
     }
   }),
 
+  'COFFEE_SIZE_QUESTION': () => ({
+    type: 'QUOTE_CARD',
+    props: {
+      quote: 'קטן? בינוני? גדול?',
+      author: 'בחר גודל קפה'
+    }
+  }),
+
   'COFFEE_TO_REVENUE': (data) => ({
     type: 'KPI_BIG_NUMBER',
     props: {
@@ -166,16 +334,16 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
     type: 'VIDEO_EMBED',
     props: {
       url: data.finance.strongest_quarter_deal.video,
-      title: `${data.finance.strongest_quarter_deal.client} - ${data.finance.strongest_quarter}`,
-      description: data.finance.strongest_quarter_deal.video_description
+      title: `${data.finance.strongest_quarter_deal.client} - Q3`,
+      description: 'הרבעון הכי חזק'
     }
   }),
 
   'COFFEE_CORNER_JOKE': (data) => ({
     type: 'QUOTE_CARD',
     props: {
-      quote: data.culture.most_common_meeting_phrase,
-      author: data.culture.coffee_corner_joke.most_coffee
+      quote: data.culture.coffee_corner_joke.most_coffee,
+      author: 'שיאן צריכת הקפאין'
     }
   }),
 
@@ -196,7 +364,7 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
         rank: k.rank,
         name: k.word,
         value: '',
-        subtitle: k.context || ''
+        subtitle: ''
       }))
     }
   }),
@@ -215,8 +383,8 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
     type: 'VIDEO_EMBED',
     props: {
       url: data.campaigns.enzo_sodastream.video,
-      title: data.campaigns.enzo_sodastream.name,
-      description: data.campaigns.enzo_sodastream.video_description
+      title: 'SodaStream Enso',
+      description: '3 אנשים, מהלך אחד, אימפקט גדול'
     }
   }),
 
@@ -234,7 +402,7 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
     type: 'QUOTE_CARD',
     props: {
       quote: data.culture.most_common_meeting_phrase,
-      author: 'כל פגישת זום'
+      author: 'המשפט הכי נפוץ בזום'
     }
   }),
 
@@ -252,8 +420,8 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
     props: {
       value: data.kpi.top_performing_team.actual,
       label: data.kpi.top_performing_team.name,
-      prefix: '₪',
-      subtext: `יעד: ${(data.kpi.top_performing_team.target / 1000000).toFixed(0)}M`
+      prefix: '',
+      subtext: `יעד: ${(data.kpi.top_performing_team.target / 1000000).toFixed(0)}M - הגיעו ל-${(data.kpi.top_performing_team.actual / 1000000).toFixed(2)}M`
     }
   }),
 
@@ -263,7 +431,7 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
       title: 'DNA של לידרס',
       cards: data.dna.values.map(v => ({
         title: v.title,
-        description: v.description.slice(0, 60) + '...'
+        description: v.description.slice(0, 80) + '...'
       }))
     }
   }),
@@ -276,13 +444,13 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
     }
   }),
 
-  'GROWTH_FORECAST': (data) => ({
+  'GROWTH_FORECAST': () => ({
     type: 'MINI_CHART',
     props: {
-      title: 'תחזית צמיחה 2026',
+      title: 'תרחישי צמיחה 2026',
       data: [
         { name: 'תרחיש 1', value: 40 },
-        { name: 'תרחיש 2', value: 110 }
+        { name: 'תרחיש 2 (AI)', value: 100 }
       ]
     }
   }),
@@ -290,7 +458,7 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
   'CONSULTANTS': (data) => ({
     type: 'VALUE_CARDS',
     props: {
-      title: 'היועצים שלנו',
+      title: 'היועצים שמלווים אותנו',
       cards: data.consultants.slice(0, 4).map(c => ({
         title: c.name,
         description: c.role,
@@ -319,89 +487,82 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => FlowResponse['vi
   })
 };
 
-// מנוע הזיהוי
-export function processMessage(
-  message: string,
-  currentQuestionIndex: number
-): FlowResponse {
-  const normalizedMessage = message.trim().toLowerCase();
+// זיהוי intent מטקסט
+function detectIntent(text: string): string | null {
+  const normalizedText = text.trim().toLowerCase();
   
-  // בדוק אם זו תשובה חיובית - מפעיל את ה-intent הבא
-  const isPositive = POSITIVE_RESPONSES.some(r => 
-    normalizedMessage.includes(r.toLowerCase())
-  );
+  // מיפוי keywords ל-intents
+  const intentPatterns: [string[], string][] = [
+    [['ראשי פרקים', 'סיכום שנה', 'בוקר טוב', 'נושאים', 'לכל עובדי'], 'YEAR_RECAP_HEADLINES'],
+    [['חפרת', 'תמציתי', 'קצר', 'לא חופר', 'מסקרן', 'עניין'], 'YEAR_RECAP_SHORT'],
+    [['לקוח גדול', 'כיס עמוק', 'הכנסות', 'קולגייט', 'צמיחה'], 'TOP_REVENUE_CLIENT_2025'],
+    [['כוסות קפה', 'קפה בארומה', 'ארומה', 'בינוני'], 'COFFEE_TO_REVENUE'],
+    [['רבעון חזק', 'רבעון הכי', 'עסקה', 'פריזבי'], 'STRONGEST_QUARTER'],
+    [['מטבח', 'מכונת קפה', 'קפאין', 'פינת קפה'], 'COFFEE_CORNER_JOKE'],
+    [['ויראלי', 'שבר את הרשת', 'טראפיק', 'חשיפות'], 'VIRAL_CAMPAIGN_2025'],
+    [['פידבק', 'מילים', '3 מילים', 'לקוחות אמרו'], 'CLIENT_FEEDBACK_KEYWORDS'],
+    [['ai', 'חסכנו', 'זמן', 'ייעול', 'בינה מלאכותית'], 'AI_TIME_SAVINGS'],
+    [['אנזו', 'סודה סטרים', 'מורכב', 'טכנולוגי'], 'ENZO_SODASTREAM'],
+    [['roi', 'החזר', 'תשואה', 'מרשים'], 'ROI_BEST'],
+    [['משפט נפוץ', 'פגישות', 'זום', 'מיוט'], 'MOST_COMMON_MEETING_PHRASE'],
+    [['חמישי שמח', 'אירועים', 'גיבוש', 'הווי', 'work life'], 'CULTURE_EVENTS'],
+    [['צוות הכי', 'שיאני', 'kpi', 'ביצועים', 'יעדים'], 'TOP_PERFORMING_TEAM'],
+    [['dna', 'ערכים', 'זהות', '5 ערכים'], 'COMPANY_DNA'],
+    [['פרודוקטיבי', 'פחות פרודוקטיבי', 'תפוחי אדמה'], 'LEAST_PRODUCTIVE_TIME'],
+    [['צמיחה', 'תחזית', 'דצמבר 2026', '2026'], 'GROWTH_FORECAST'],
+    [['יועצים', 'מלווים', 'אחיעד', 'כוכבית'], 'CONSULTANTS'],
+    [['חזון', '2026', 'שנה הבאה', 'welcome'], 'VISION_2026_INTRO'],
+    [['שיר', 'ראפ', 'חרוזים', 'לסיום'], 'RAP_SUMMARY']
+  ];
 
-  let targetIntent: string;
-  let questionIndex = currentQuestionIndex;
-
-  if (isPositive && currentQuestionIndex < flowQuestions.length) {
-    // תשובה חיובית - הפעל את ה-intent הנוכחי
-    targetIntent = flowQuestions[currentQuestionIndex].intentId;
-    questionIndex++;
-  } else {
-    // נסה לזהות intent מהטקסט
-    targetIntent = detectIntentFromText(normalizedMessage) || 
-                   flowQuestions[currentQuestionIndex]?.intentId || 
-                   'UNKNOWN';
-    if (targetIntent !== 'UNKNOWN') {
-      questionIndex++;
-    }
-  }
-
-  const responseGenerator = INTENT_RESPONSES[targetIntent];
-  const visualGenerator = INTENT_VISUALS[targetIntent];
-
-  const nextQuestion = flowQuestions[questionIndex] || null;
-
-  if (!responseGenerator) {
-    return {
-      intentId: 'UNKNOWN',
-      answerText: 'לא בטוח שהבנתי. אפשר לנסח אחרת?',
-      visualPayload: { type: 'QUOTE_CARD', props: { quote: '?', author: '' } },
-      nextQuestion
-    };
-  }
-
-  return {
-    intentId: targetIntent,
-    answerText: responseGenerator(dataPack),
-    visualPayload: visualGenerator?.(dataPack) || { type: 'QUOTE_CARD', props: {} },
-    nextQuestion
-  };
-}
-
-// זיהוי intent מטקסט חופשי
-function detectIntentFromText(text: string): string | null {
-  const intentKeywords: Record<string, string[]> = {
-    'YEAR_RECAP_HEADLINES': ['ראשי פרקים', 'סיכום שנה', 'נושאים'],
-    'YEAR_RECAP_SHORT': ['תמציתי', 'קצר', 'לא חופר', 'חפרת'],
-    'TOP_REVENUE_CLIENT_2025': ['לקוח גדול', 'כיס עמוק', 'הכנסות'],
-    'COFFEE_TO_REVENUE': ['קפה', 'ארומה', 'כוסות'],
-    'STRONGEST_QUARTER': ['רבעון', 'חזק', 'עסקה'],
-    'COFFEE_CORNER_JOKE': ['מטבח', 'קפאין', 'מכונת קפה'],
-    'VIRAL_CAMPAIGN_2025': ['ויראלי', 'שבר את הרשת', 'קמפיין'],
-    'CLIENT_FEEDBACK_KEYWORDS': ['פידבק', 'מילים', 'לקוחות אמרו'],
-    'AI_TIME_SAVINGS': ['ai', 'בינה מלאכותית', 'חסכנו', 'זמן'],
-    'ENZO_SODASTREAM': ['אנזו', 'סודה סטרים', 'מורכב'],
-    'ROI_BEST': ['roi', 'החזר', 'תשואה'],
-    'MOST_COMMON_MEETING_PHRASE': ['פגישות', 'zoom', 'מיוט', 'משפט'],
-    'CULTURE_EVENTS': ['חמישי שמח', 'אירועים', 'גיבוש'],
-    'TOP_PERFORMING_TEAM': ['צוות', 'ביצועים', 'kpi', 'יעדים'],
-    'COMPANY_DNA': ['dna', 'ערכים', 'זהות'],
-    'LEAST_PRODUCTIVE_TIME': ['פרודוקטיבי', 'שקי תפוחי אדמה'],
-    'GROWTH_FORECAST': ['צמיחה', 'תחזית', '2026'],
-    'CONSULTANTS': ['יועצים', 'מלווים'],
-    'VISION_2026_INTRO': ['חזון', 'שנה הבאה'],
-    'RAP_SUMMARY': ['שיר', 'ראפ', 'חרוזים']
-  };
-
-  for (const [intent, keywords] of Object.entries(intentKeywords)) {
-    if (keywords.some(k => text.includes(k))) {
-      return intent;
+  for (const [keywords, intentId] of intentPatterns) {
+    if (keywords.some(k => normalizedText.includes(k))) {
+      return intentId;
     }
   }
 
   return null;
+}
+
+// מנוע הזיהוי הראשי
+export function processMessage(
+  message: string,
+  currentQuestionIndex: number
+): FlowResponse {
+  const intentId = detectIntent(message);
+
+  if (!intentId) {
+    return {
+      intentId: 'UNKNOWN',
+      answerText: 'לא בטוח שהבנתי. אפשר לנסח אחרת?',
+      visualPayload: { type: 'QUOTE_CARD', props: { quote: '?', author: '' } },
+      nextQuestion: flowQuestions[currentQuestionIndex] || null
+    };
+  }
+
+  const responseGenerator = INTENT_RESPONSES[intentId];
+  const visualGenerator = INTENT_VISUALS[intentId];
+
+  if (!responseGenerator) {
+    return {
+      intentId: 'UNKNOWN',
+      answerText: 'הנושא הזה עדיין לא מחובר לדאטה שלי.',
+      visualPayload: { type: 'QUOTE_CARD', props: { quote: '?', author: '' } },
+      nextQuestion: flowQuestions[currentQuestionIndex] || null
+    };
+  }
+
+  // מצא את השאלה הבאה
+  const currentIndex = flowQuestions.findIndex(q => q.intentId === intentId);
+  const nextIndex = currentIndex >= 0 ? currentIndex + 1 : currentQuestionIndex + 1;
+  const nextQuestion = flowQuestions[nextIndex] || null;
+
+  return {
+    intentId,
+    answerText: responseGenerator(dataPack),
+    visualPayload: visualGenerator?.(dataPack) || { type: 'QUOTE_CARD', props: {} },
+    nextQuestion
+  };
 }
 
 // פונקציה לקבלת ה-index הנוכחי
@@ -413,4 +574,3 @@ export function getCurrentQuestionIndex(askedIntents: string[]): number {
   
   return lastIndex >= 0 ? lastIndex + 1 : askedIntents.length;
 }
-

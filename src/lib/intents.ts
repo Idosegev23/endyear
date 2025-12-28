@@ -35,10 +35,10 @@ export const intents: Intent[] = [
   {
     id: 'COFFEE_TO_REVENUE',
     title: 'המרת הכנסות לכוסות קפה',
-    triggers: ['כוסות קפה', 'קפה בארומה', 'המרה לקפה', 'קפה'],
-    response_style: 'הומוריסטי עם מספרים',
+    triggers: ['כוסות קפה', 'קפה בארומה', 'המרה לקפה', 'קפה', 'ארומה'],
+    response_style: 'הומוריסטי עם מספרים - הכנסות 35 מליון, מחיר כוס 13 שח, 2,692,307 כוסות סהכ, 76,923 לעובד',
     visual_type: 'KPI_BIG_NUMBER',
-    data_paths: ['finance.total_revenue_2025', 'finance.coffee_calculation', 'company.employees_count']
+    data_paths: ['finance', 'company']
   },
   {
     id: 'STRONGEST_QUARTER',

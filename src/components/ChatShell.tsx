@@ -253,8 +253,8 @@ export function ChatShell() {
                   </p>
                 </motion.div>
 
-                {/* Bot invites Itamar to start */}
-                <motion.div className="w-full max-w-md space-y-4">
+                {/* Bot and Itamar hosting together */}
+                <motion.div className="w-full max-w-lg space-y-4">
                   {/* Bot message */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
@@ -262,60 +262,53 @@ export function ChatShell() {
                     transition={{ delay: 0.6 }}
                     className="flex items-start gap-3"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gold-main to-gold-secondary flex items-center justify-center shrink-0 shadow-md">
-                      <svg className="w-5 h-5 text-near-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-gold-main to-gold-secondary flex items-center justify-center shrink-0 shadow-lg">
+                      <svg className="w-6 h-6 text-near-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
                     </div>
-                    <div className="bg-gray-100 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[280px]">
-                      <span className="text-sm text-gray-700">
-                        איתמר, בוא נתחיל. תשאל אותי:
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.8 }}
+                      className="flex-1 bg-gray-100 rounded-2xl rounded-tr-sm px-5 py-4"
+                    >
+                      <span className="text-base text-gray-800 leading-relaxed">
+                        {suggestedQuestions[0].botIntro}
                       </span>
-                    </div>
+                    </motion.div>
                   </motion.div>
 
-                  {/* Itamar's first question */}
+                  {/* Itamar's response */}
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 1.2, type: 'spring', stiffness: 200 }}
-                    className="flex items-start gap-3 justify-end"
+                    transition={{ delay: 1.5, type: 'spring', stiffness: 200 }}
+                    className="flex justify-end pr-2"
                   >
                     <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
                       onClick={() => handleSuggestionClick(suggestedQuestions[0])}
-                      className="group relative max-w-[300px] text-right"
+                      className="group flex items-center gap-3"
                     >
-                      <div className="relative bg-white border-2 border-near-black rounded-2xl rounded-tl-sm px-5 py-4 transition-all group-hover:border-gold-main group-hover:shadow-xl group-hover:shadow-gold-main/10 overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gold-main/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-                        
-                        <span className="relative text-base font-medium text-near-black">
-                          {suggestedQuestions[0].question}
-                        </span>
-
+                      {/* Button */}
+                      <motion.div className="relative bg-near-black text-white px-6 py-3.5 rounded-2xl rounded-tl-sm font-medium text-base shadow-lg overflow-hidden">
+                        {/* Shine effect */}
                         <motion.div
-                          animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-gold-main"
+                          animate={{ x: ['-100%', '200%'] }}
+                          transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                         />
+                        <span className="relative">{suggestedQuestions[0].question}</span>
+                      </motion.div>
+
+                      {/* Itamar Avatar */}
+                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-near-black to-gray-800 flex items-center justify-center text-white text-lg font-bold shrink-0 shadow-lg border-2 border-gold-main">
+                        א
                       </div>
                     </motion.button>
-
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-near-black to-gray-800 flex items-center justify-center text-white font-bold shrink-0 shadow-md">
-                      א
-                    </div>
                   </motion.div>
-
-                  {/* Hint */}
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2 }}
-                    className="text-xs text-gray-400 text-center"
-                  >
-                    לחצו על השאלה להתחיל
-                  </motion.p>
                 </motion.div>
               </motion.div>
             )}

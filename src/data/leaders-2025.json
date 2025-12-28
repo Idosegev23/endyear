@@ -16,6 +16,9 @@
       "description": "הפקות מדהימות עם משפיענים מעניינים",
       "influencers": ["מנור סולומון", "אסי ישראלוף", "טליה עובדיה", "אלכס שולץ", "רון יוחננוב"],
       "team_credits": ["יובל רפאל - ניהול לקוח ברמה גבוהה", "יואב - מהלכי מדיה תומכים", "קריאייטיב מעולה שיצא מהקופסא"],
+      "video": "/vids/tayarut/1.mp4",
+      "video_title": "פריזבי - הרבעון הכי חזק",
+      "video_description": "אקספנג ורנו עם משפיענים מובילים",
       "videos": [
         "https://drive.google.com/file/d/17yn8s1MW5VUOFeBCiey77H0zsb-lI44e/view",
         "https://drive.google.com/file/d/1Nln_h3kqVU27TNqXiV6e4RNB2_HjQRnf/view"
@@ -87,7 +90,10 @@
       "top_influencer": "טליה עובדיה",
       "views": 800000,
       "instagram_url": "https://www.instagram.com/reel/DMVUIuBoVa_/",
-      "description": "הקמפיין הכי ויראלי של LEADERS ב-2025"
+      "description": "הקמפיין הכי ויראלי של LEADERS ב-2025",
+      "video": "/vids/sodastream/instagram_clip.mp4",
+      "video_title": "טליה עובדיה - אקספנג",
+      "video_description": "יותר מ-800,000 חשיפות"
     },
     "client_feedback_keywords": [
       { "word": "מהמם!!!", "rank": 1, "note": "עם 3 סימני קריאה" },
@@ -115,6 +121,9 @@
         "time": "21:30 בערב",
         "word": "מהמם"
       },
+      "video": "/vids/sodastream/Final_5.mp4",
+      "video_title": "SodaStream Enso - AI Experience",
+      "video_description": "3 אנשים, מהלך אחד, אימפקט גדול",
       "projects": [
         { "url": "/vids/sodastream/Final_5.mp4", "local": true },
         { "url": "/vids/sodastream/instagram_clip.mp4", "local": true }

@@ -44,8 +44,8 @@ export const intents: Intent[] = [
     id: 'STRONGEST_QUARTER',
     title: 'הרבעון החזק ביותר',
     triggers: ['רבעון הכי חזק', 'רבעון הכי טוב', 'איזה רבעון', 'רבעון חזק'],
-    response_style: 'עובדתי עם סיפור העסקה',
-    visual_type: 'TIMELINE_CARD',
+    response_style: 'עובדתי עם סיפור העסקה - הציגו וידאו!',
+    visual_type: 'VIDEO_EMBED',
     data_paths: ['finance.strongest_quarter', 'finance.strongest_quarter_deal']
   },
   {
@@ -84,8 +84,8 @@ export const intents: Intent[] = [
     id: 'ENZO_SODASTREAM',
     title: 'פרויקט האנזו - סודה סטרים',
     triggers: ['אנזו', 'סודה סטרים', 'פרויקט מורכב', 'מורכב טכנולוגית', 'sodastream'],
-    response_style: 'סיפורי עם פרטים טכניים',
-    visual_type: 'TIMELINE_CARD',
+    response_style: 'סיפורי עם פרטים טכניים - הסבר על הפרויקט ואז וידאו',
+    visual_type: 'VIDEO_EMBED',
     data_paths: ['campaigns.enzo_sodastream']
   },
   {

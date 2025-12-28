@@ -1,116 +1,136 @@
-// סדר השאלות לפי התסריט המדויק
+// סדר השאלות לפי התסריט המדויק - בסגנון show hosting
 export interface FlowQuestion {
   id: string;
-  question: string;
+  question: string; // מה איתמר כותב/לוחץ
+  botIntro: string; // מה הבוט אומר לפני
   intentId: string;
 }
 
 export const flowQuestions: FlowQuestion[] = [
   {
     id: 'q1',
-    question: 'תן לי ראשי פרקים לסיכום השנה',
+    question: 'כן, בוא נתחיל',
+    botIntro: 'איתמר, יאלה בוא נתחיל.. שנציג להם את ראשי הפרקים?',
     intentId: 'YEAR_RECAP_HEADLINES'
   },
   {
     id: 'q2',
-    question: 'חפרת לי, תן תמציתי יותר',
+    question: 'תמציתי יותר בבקשה',
+    botIntro: 'איתמר, חפרנו להם קצת... רוצה גרסה יותר קצרה?',
     intentId: 'YEAR_RECAP_SHORT'
   },
   {
     id: 'q3',
-    question: 'מי היה לקוח הכיס העמוק שלנו?',
+    question: 'כן, בוא נראה',
+    botIntro: 'עכשיו משהו מעניין - בואו נראה מי היה לקוח הכיס העמוק שלנו?',
     intentId: 'TOP_REVENUE_CLIENT_2025'
   },
   {
     id: 'q4',
-    question: 'כמה כוסות קפה זה ההכנסות שלנו?',
+    question: 'בינוני',
+    botIntro: 'שאלה חשובה - אם היינו ממירים את כל ההכנסות לכוסות קפה בארומה... איזה גודל קפה, איתמר?',
     intentId: 'COFFEE_TO_REVENUE'
   },
   {
     id: 'q5',
-    question: 'מה היה הרבעון הכי חזק?',
+    question: 'ספר לנו',
+    botIntro: 'איתמר רוצה לדעת - מה היה הרבעון הכי חזק שלנו?',
     intentId: 'STRONGEST_QUARTER'
   },
   {
     id: 'q6',
-    question: 'מי בילה הכי הרבה במטבח ליד הקפה?',
+    question: 'דווקא כן!',
+    botIntro: 'תגידו, בא לכם לגלות מי בילה הכי הרבה במטבח ליד מכונת הקפה?',
     intentId: 'COFFEE_CORNER_JOKE'
   },
   {
     id: 'q7',
-    question: 'איזה קמפיין שבר את הרשת?',
+    question: 'בטח!',
+    botIntro: 'ועכשיו הרגע שכולם מחכים לו - איזה קמפיין שבר את הרשת?',
     intentId: 'VIRAL_CAMPAIGN_2025'
   },
   {
     id: 'q8',
-    question: 'אילו 3 מילים הופיעו הכי הרבה בפידבקים?',
+    question: 'מה יצא?',
+    botIntro: 'סקרנים לדעת - אילו 3 מילים הופיעו הכי הרבה בפידבקים מהלקוחות?',
     intentId: 'CLIENT_FEEDBACK_KEYWORDS'
   },
   {
     id: 'q9',
-    question: 'כמה זמן חסכנו עם AI?',
+    question: 'תראה לנו',
+    botIntro: 'עכשיו משהו שממש גאים בו - כמה זמן חסכנו בזכות AI?',
     intentId: 'AI_TIME_SAVINGS'
   },
   {
     id: 'q10',
-    question: 'מה היה הפרויקט הכי מורכב טכנולוגית?',
+    question: 'ספר!',
+    botIntro: 'הפרויקט הכי מורכב טכנולוגית שפיצחנו השנה - מי יודע מה זה?',
     intentId: 'ENZO_SODASTREAM'
   },
   {
     id: 'q11',
-    question: 'מה ה-ROI הכי מרשים שעשינו?',
+    question: 'תן לנו מספר',
+    botIntro: 'רוצים לשמוע נתון שישאיר אתכם פתוחים? ה-ROI הכי מרשים שעשינו...',
     intentId: 'ROI_BEST'
   },
   {
     id: 'q12',
-    question: 'מה המשפט הכי נפוץ בפגישות וידאו?',
+    question: 'הא?',
+    botIntro: 'ועכשיו קצת הומור - מה המשפט הכי נפוץ שנאמר בפגישות הוידאו שלנו?',
     intentId: 'MOST_COMMON_MEETING_PHRASE'
   },
   {
     id: 'q13',
-    question: 'כמה אירועי חברה וגיבושים היו?',
+    question: 'תסכם',
+    botIntro: 'בואו נדבר על הווי - כמה אירועים, גיבושים וחמישי שמח היו השנה?',
     intentId: 'CULTURE_EVENTS'
   },
   {
     id: 'q14',
-    question: 'איזה צוות מחזיק בתואר שיאני הביצועים?',
+    question: 'מי זה?',
+    botIntro: 'והצוות שמחזיק בתואר שיאני הביצועים של 2025...',
     intentId: 'TOP_PERFORMING_TEAM'
   },
   {
     id: 'q15',
-    question: 'מה ה-DNA של לידרס?',
+    question: 'נשמע מעניין',
+    botIntro: 'איתמר, בוא נזקק את ה-DNA של לידרס - 5 ערכים שמגדירים אותנו:',
     intentId: 'COMPANY_DNA'
   },
   {
     id: 'q16',
-    question: 'מתי הכי פחות פרודוקטיביים?',
+    question: 'אמת?',
+    botIntro: 'ועכשיו אמת קטנה - מתי אנחנו הכי פחות פרודוקטיביים?',
     intentId: 'LEAST_PRODUCTIVE_TIME'
   },
   {
     id: 'q17',
-    question: 'איפה לידרס תהיה בסוף 2026?',
+    question: 'ספר לנו',
+    botIntro: 'בואו נסתכל קדימה - איפה לידרס תהיה בסוף 2026?',
     intentId: 'GROWTH_FORECAST'
   },
   {
     id: 'q18',
-    question: 'מי היועצים שמלווים אותנו?',
+    question: 'הציגו אותם',
+    botIntro: 'לפני שנמשיך - בואו נכיר את היועצים המדהימים שמלווים אותנו:',
     intentId: 'CONSULTANTS'
   },
   {
     id: 'q19',
-    question: 'ספר לי על לידרס ב-2026',
+    question: 'מוכן!',
+    botIntro: 'ועכשיו הרגע הגדול - Welcome 2026! איתמר, מוכן?',
     intentId: 'VISION_2026_INTRO'
   },
   {
     id: 'q20',
-    question: 'תכתוב שיר ראפ לסיכום!',
+    question: 'יאלה!',
+    botIntro: 'ולסיום - שיר ראפ קצר שחוגג את כל מה שעשינו!',
     intentId: 'RAP_SUMMARY'
   }
 ];
 
-// מחזיר את 2-3 השאלות הבאות לפי ה-intent האחרון
-export function getNextQuestions(lastIntentId: string | null, askedIntents: string[]): FlowQuestion[] {
-  // מוצא את האינדקס של ה-intent האחרון
+// מחזיר את השאלה הבאה לפי ה-intent האחרון
+export function getNextQuestion(lastIntentId: string | null, askedIntents: string[]): FlowQuestion | null {
   let startIndex = 0;
   
   if (lastIntentId) {
@@ -120,15 +140,24 @@ export function getNextQuestions(lastIntentId: string | null, askedIntents: stri
     }
   }
   
-  // מסנן שאלות שכבר נשאלו ולוקח 2-3 הבאות
   const availableQuestions = flowQuestions
     .slice(startIndex)
     .filter(q => !askedIntents.includes(q.intentId));
   
-  return availableQuestions.slice(0, 3);
+  return availableQuestions[0] || null;
 }
 
-// שאלות פתיחה
+// שאלה ראשונה
+export function getOpeningQuestion(): FlowQuestion {
+  return flowQuestions[0];
+}
+
+// For backwards compatibility
+export function getNextQuestions(lastIntentId: string | null, askedIntents: string[]): FlowQuestion[] {
+  const next = getNextQuestion(lastIntentId, askedIntents);
+  return next ? [next] : [];
+}
+
 export function getOpeningQuestions(): FlowQuestion[] {
-  return flowQuestions.slice(0, 3);
+  return [flowQuestions[0]];
 }

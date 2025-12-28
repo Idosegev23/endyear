@@ -10,7 +10,13 @@ export type VisualType =
   | 'VALUE_CARDS'
   | 'TIMELINE_CARD'
   | 'ANIMATED_LIST'
-  | 'FORMATTED_TEXT';
+  | 'FORMATTED_TEXT'
+  | 'IMAGE_CARD'
+  | 'IMAGE_WITH_KPI'
+  | 'VIDEO_WITH_KPI'
+  | 'COMPARISON_TABLE'
+  | 'VIDEO_GALLERY'
+  | 'CONSULTANT_CARDS';
 
 export interface VisualPayload {
   type: VisualType;

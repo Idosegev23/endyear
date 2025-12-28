@@ -12,7 +12,13 @@ import {
   ValueCards,
   TimelineCard,
   AnimatedList,
-  FormattedText
+  FormattedText,
+  ImageCard,
+  ImageWithKpi,
+  VideoWithKpi,
+  VideoGallery,
+  ComparisonTable,
+  ConsultantCards
 } from './visuals';
 import type { FlowQuestion } from '@/lib/flowQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
@@ -40,6 +46,7 @@ export function ChatShell() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [typingMessageId, setTypingMessageId] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const botMessagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
   const {
@@ -55,8 +62,14 @@ export function ChatShell() {
     inputRef.current?.focus();
   }, []);
 
+  // Scroll user messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Scroll bot messages
+  useEffect(() => {
+    botMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, typingMessageId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -164,8 +177,8 @@ export function ChatShell() {
         
         {/* LEFT - Itamar */}
         <div className="w-[35%] flex flex-col bg-white border-l border-gray-200">
-          <div className="flex-1 overflow-y-auto p-6 scrollbar-hide flex flex-col justify-end">
-            <div className="space-y-4">
+          <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
+            <div className="space-y-4 min-h-full flex flex-col justify-end">
               {messages.filter(m => m.role === 'user').map((msg) => (
                 <motion.div
                   key={msg.id}
@@ -176,6 +189,7 @@ export function ChatShell() {
                   <p className="text-gray-800 text-xl leading-relaxed">{msg.text}</p>
                 </motion.div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
           </div>
 
@@ -206,7 +220,7 @@ export function ChatShell() {
         {/* RIGHT - Bot */}
         <div className="w-[65%] bg-deep-black flex flex-col overflow-hidden">
           <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
-            <div className="space-y-8">
+            <div className="space-y-8 pb-8">
               {messages.filter(m => m.role === 'bot').map((msg) => (
                 <BotMessageBubble 
                   key={msg.id}
@@ -227,8 +241,7 @@ export function ChatShell() {
                   </div>
                 </motion.div>
               )}
-              
-              <div ref={messagesEndRef} />
+              <div ref={botMessagesEndRef} />
             </div>
           </div>
         </div>
@@ -262,6 +275,18 @@ function VisualRenderer({ visual }: { visual: VisualPayload }) {
       return <AnimatedList {...p} />;
     case 'FORMATTED_TEXT':
       return <FormattedText {...p} />;
+    case 'IMAGE_CARD':
+      return <ImageCard {...p} />;
+    case 'IMAGE_WITH_KPI':
+      return <ImageWithKpi {...p} />;
+    case 'VIDEO_WITH_KPI':
+      return <VideoWithKpi {...p} />;
+    case 'VIDEO_GALLERY':
+      return <VideoGallery {...p} />;
+    case 'COMPARISON_TABLE':
+      return <ComparisonTable {...p} />;
+    case 'CONSULTANT_CARDS':
+      return <ConsultantCards {...p} />;
     default:
       return null;
   }

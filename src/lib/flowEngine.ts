@@ -326,27 +326,27 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   'STRONGEST_QUARTER': (data) => ({
     type: 'VIDEO_EMBED',
     props: {
-      url: '/vids/tayarut/1.mp4',
+      url: data.finance.strongest_quarter_deal.video,
       title: `${data.finance.strongest_quarter_deal.client} - רבעון 3`,
       description: data.finance.strongest_quarter_deal.brands.join(' | ')
     }
   }),
 
-  'COFFEE_CORNER_JOKE': () => ({
-    type: 'VIDEO_EMBED',
+  'COFFEE_CORNER_JOKE': (data) => ({
+    type: 'IMAGE_CARD',
     props: {
-      url: '/vids/tayarut/telaviv_bike.mp4',
+      src: data.culture.coffee_corner_joke.image,
       title: 'פינת הקפה',
-      description: 'מי בילה הכי הרבה במטבח?'
+      description: `${data.culture.coffee_corner_joke.most_coffee} - בילה הכי הרבה במטבח`
     }
   }),
 
   'VIRAL_CAMPAIGN_2025': (data) => ({
     type: 'VIDEO_EMBED',
     props: {
-      url: '/vids/sodastream/instagram_clip.mp4',
+      url: data.campaigns.viral_campaign_2025.video,
       title: data.campaigns.viral_campaign_2025.name,
-      description: `${data.campaigns.viral_campaign_2025.views.toLocaleString()} חשיפות`
+      description: `${data.campaigns.viral_campaign_2025.top_influencer} - ${data.campaigns.viral_campaign_2025.views.toLocaleString()} חשיפות`
     }
   }),
 
@@ -364,8 +364,9 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   }),
 
   'AI_TIME_SAVINGS': (data) => ({
-    type: 'KPI_BIG_NUMBER',
+    type: 'IMAGE_WITH_KPI',
     props: {
+      src: data.ai.image,
       value: data.ai.time_savings_pct,
       label: 'חיסכון בזמן',
       suffix: '%',
@@ -410,8 +411,9 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   }),
 
   'TOP_PERFORMING_TEAM': (data) => ({
-    type: 'KPI_BIG_NUMBER',
+    type: 'VIDEO_WITH_KPI',
     props: {
+      url: data.kpi.top_performing_team.video,
       value: (data.kpi.top_performing_team.actual / 1000000).toFixed(2),
       label: `${data.kpi.top_performing_team.name} - ${data.kpi.top_performing_team.client}`,
       suffix: 'M',
@@ -438,25 +440,24 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
     }
   }),
 
-  'GROWTH_FORECAST': () => ({
-    type: 'MINI_CHART',
+  'GROWTH_FORECAST': (data) => ({
+    type: 'COMPARISON_TABLE',
     props: {
       title: 'תרחישי צמיחה 2026',
-      data: [
-        { name: 'תרחיש 1', value: 40 },
-        { name: 'תרחיש 2 (AI)', value: 100 }
-      ]
+      scenario_1: data.vision_2026.growth_scenarios.scenario_1,
+      scenario_2: data.vision_2026.growth_scenarios.scenario_2
     }
   }),
 
   'CONSULTANTS': (data) => ({
-    type: 'VALUE_CARDS',
+    type: 'CONSULTANT_CARDS',
     props: {
       title: 'היועצים שמלווים אותנו',
-      cards: data.consultants.slice(0, 4).map(c => ({
-        title: c.name,
-        description: c.role,
-        icon: c.image ? `<img src="${c.image}" class="w-12 h-12 rounded-full object-cover" />` : c.name.charAt(0)
+      consultants: data.consultants.filter((c: { image?: string }) => c.image).map((c: { name: string; role: string; description?: string; image?: string }) => ({
+        name: c.name,
+        role: c.role,
+        description: c.description,
+        image: c.image
       }))
     }
   }),
@@ -485,28 +486,47 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
 function detectIntent(text: string): string | null {
   const normalizedText = text.trim().toLowerCase();
   
-  // מיפוי keywords ל-intents
+  // מיפוי keywords ל-intents - סדר עדיפויות (ספציפי לפני כללי)
   const intentPatterns: [string[], string][] = [
+    // עדיפות גבוהה - ביטויים ספציפיים
+    [['שיר', 'ראפ', 'חרוזים', 'לסיום', 'שיר קצר'], 'RAP_SUMMARY'],
+    [['שבר את הרשת', 'ויראלי', 'טראפיק הכי גבוה', 'טליה'], 'VIRAL_CAMPAIGN_2025'],
+    [['פחות פרודוקטיבי', 'תפוחי אדמה', 'יום הכי פחות'], 'LEAST_PRODUCTIVE_TIME'],
+    [['קצב צמיחה', 'תחזית', 'דצמבר 2026', '31 בדצמבר', 'מספר עובדים'], 'GROWTH_FORECAST'],
+    
+    // שאלות ראשיות
     [['ראשי פרקים', 'סיכום שנה', 'בוקר טוב', 'נושאים', 'לכל עובדי'], 'YEAR_RECAP_HEADLINES'],
     [['חפרת', 'תמציתי', 'קצר', 'לא חופר', 'מסקרן', 'עניין'], 'YEAR_RECAP_SHORT'],
-    [['כוסות קפה', 'קפה בארומה', 'ארומה', 'בינוני', 'ממירים', 'לכוסות', 'כוסות לכל עובד', 'כמה כוסות'], 'COFFEE_TO_REVENUE'],
-    [['לקוח גדול', 'כיס עמוק', 'הכיס העמוק', 'קולגייט', 'צמחה', 'צמיחה', 'לקוח הכי גדול', 'תקציב גדול'], 'TOP_REVENUE_CLIENT_2025'],
-    [['רבעון חזק', 'רבעון הכי', 'עסקה', 'פריזבי'], 'STRONGEST_QUARTER'],
-    [['מטבח', 'מכונת קפה', 'קפאין', 'פינת קפה'], 'COFFEE_CORNER_JOKE'],
-    [['ויראלי', 'שבר את הרשת', 'טראפיק', 'חשיפות'], 'VIRAL_CAMPAIGN_2025'],
-    [['פידבק', 'מילים', '3 מילים', 'לקוחות אמרו'], 'CLIENT_FEEDBACK_KEYWORDS'],
-    [['ai', 'חסכנו', 'זמן', 'ייעול', 'בינה מלאכותית'], 'AI_TIME_SAVINGS'],
-    [['אנזו', 'סודה סטרים', 'מורכב', 'טכנולוגי'], 'ENZO_SODASTREAM'],
-    [['roi', 'החזר', 'תשואה', 'מרשים'], 'ROI_BEST'],
-    [['משפט נפוץ', 'פגישות', 'זום', 'מיוט'], 'MOST_COMMON_MEETING_PHRASE'],
-    [['חמישי שמח', 'אירועים', 'גיבוש', 'הווי', 'work life'], 'CULTURE_EVENTS'],
-    [['צוות הכי', 'שיאני', 'kpi', 'ביצועים', 'יעדים'], 'TOP_PERFORMING_TEAM'],
-    [['dna', 'ערכים', 'זהות', '5 ערכים'], 'COMPANY_DNA'],
-    [['פרודוקטיבי', 'פחות פרודוקטיבי', 'תפוחי אדמה'], 'LEAST_PRODUCTIVE_TIME'],
-    [['צמיחה', 'תחזית', 'דצמבר 2026', '2026'], 'GROWTH_FORECAST'],
-    [['יועצים', 'מלווים', 'אחיעד', 'כוכבית'], 'CONSULTANTS'],
-    [['חזון', '2026', 'שנה הבאה', 'welcome'], 'VISION_2026_INTRO'],
-    [['שיר', 'ראפ', 'חרוזים', 'לסיום'], 'RAP_SUMMARY']
+    
+    // כוסות קפה - לפני לקוחות
+    [['כוסות קפה', 'קפה בארומה', 'ארומה', 'בינוני', 'ממירים', 'לכוסות', 'כוסות לכל עובד', 'כמה כוסות', 'הכנסות וממירים'], 'COFFEE_TO_REVENUE'],
+    
+    // לקוחות
+    [['לקוח גדול', 'כיס עמוק', 'הכיס העמוק', 'קולגייט', 'לקוח הכי גדול', 'תקציב גדול'], 'TOP_REVENUE_CLIENT_2025'],
+    [['רבעון חזק', 'רבעון הכי', 'עסקה', 'פריזבי', 'אקספנג'], 'STRONGEST_QUARTER'],
+    
+    // תרבות
+    [['מטבח', 'מכונת קפה', 'קפאין', 'פינת קפה', 'הכי הרבה זמן במטבח'], 'COFFEE_CORNER_JOKE'],
+    [['חמישי שמח', 'אירועי חברה', 'גיבוש', 'הווי', 'work life', 'balance'], 'CULTURE_EVENTS'],
+    
+    // פידבק ומילים
+    [['פידבק', '3 מילים', 'לקוחות אמרו', 'מילים הכי נפוצות'], 'CLIENT_FEEDBACK_KEYWORDS'],
+    
+    // AI וטכנולוגיה
+    [['ai', 'חסכנו', 'זמן חסכנו', 'ייעול', 'בינה מלאכותית', 'כלי ai'], 'AI_TIME_SAVINGS'],
+    [['אנזו', 'סודה סטרים', 'מורכב טכנולוגית', 'הכי מורכב'], 'ENZO_SODASTREAM'],
+    
+    // מדדים
+    [['roi', 'החזר', 'תשואה', 'נתון מרשים', 'מדד roi'], 'ROI_BEST'],
+    [['משפט נפוץ', 'פגישות וידאו', 'זום', 'מיוט'], 'MOST_COMMON_MEETING_PHRASE'],
+    [['צוות הכי', 'שיאני', 'kpi', 'שיאני ביצועים', 'עמידה ביעדים'], 'TOP_PERFORMING_TEAM'],
+    
+    // ערכים
+    [['dna', 'ערכים', 'זהות', '5 ערכים', 'הגדיר את ה-dna'], 'COMPANY_DNA'],
+    
+    // יועצים ו-2026
+    [['יועצים', 'מלווים', 'אחיעד', 'כוכבית', 'מיטל', 'אסף'], 'CONSULTANTS'],
+    [['חזון', 'לידרס ב-2026', 'שנה הבאה', 'welcome 2026', 'ספר לי על לידרס'], 'VISION_2026_INTRO']
   ];
 
   for (const [keywords, intentId] of intentPatterns) {

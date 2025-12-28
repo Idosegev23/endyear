@@ -5,3 +5,4 @@ export { Leaderboard } from './Leaderboard';
 export { QuoteCard } from './QuoteCard';
 export { ValueCards } from './ValueCards';
 export { TimelineCard } from './TimelineCard';
+export { AnimatedList } from './AnimatedList';

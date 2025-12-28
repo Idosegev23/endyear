@@ -9,7 +9,8 @@ import {
   Leaderboard,
   QuoteCard,
   ValueCards,
-  TimelineCard
+  TimelineCard,
+  AnimatedList
 } from './visuals';
 
 interface ImpactPanelProps {
@@ -109,6 +110,9 @@ export function ImpactPanel({ expanded = false }: ImpactPanelProps) {
       
       case 'TIMELINE_CARD':
         return <TimelineCard {...(props as unknown as React.ComponentProps<typeof TimelineCard>)} />;
+      
+      case 'ANIMATED_LIST':
+        return <AnimatedList {...(props as unknown as React.ComponentProps<typeof AnimatedList>)} />;
       
       default:
         return (

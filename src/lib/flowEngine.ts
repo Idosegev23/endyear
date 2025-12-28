@@ -333,24 +333,25 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   'STRONGEST_QUARTER': (data) => ({
     type: 'VIDEO_EMBED',
     props: {
-      url: data.finance.strongest_quarter_deal.video,
-      title: `${data.finance.strongest_quarter_deal.client} - Q3`,
-      description: 'הרבעון הכי חזק'
+      url: '/vids/tayarut/1.mp4',
+      title: `${data.finance.strongest_quarter_deal.client} - רבעון 3`,
+      description: data.finance.strongest_quarter_deal.brands.join(' | ')
     }
   }),
 
-  'COFFEE_CORNER_JOKE': (data) => ({
-    type: 'QUOTE_CARD',
+  'COFFEE_CORNER_JOKE': () => ({
+    type: 'VIDEO_EMBED',
     props: {
-      quote: data.culture.coffee_corner_joke.most_coffee,
-      author: 'שיאן צריכת הקפאין'
+      url: '/vids/tayarut/telaviv_bike.mp4',
+      title: 'פינת הקפה',
+      description: 'מי בילה הכי הרבה במטבח?'
     }
   }),
 
   'VIRAL_CAMPAIGN_2025': (data) => ({
     type: 'VIDEO_EMBED',
     props: {
-      url: data.campaigns.viral_campaign_2025.video,
+      url: '/vids/sodastream/instagram_clip.mp4',
       title: data.campaigns.viral_campaign_2025.name,
       description: `${data.campaigns.viral_campaign_2025.views.toLocaleString()} חשיפות`
     }
@@ -379,10 +380,10 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
     }
   }),
 
-  'ENZO_SODASTREAM': (data) => ({
+  'ENZO_SODASTREAM': () => ({
     type: 'VIDEO_EMBED',
     props: {
-      url: data.campaigns.enzo_sodastream.video,
+      url: '/vids/sodastream/Final_5.mp4',
       title: 'SodaStream Enso',
       description: '3 אנשים, מהלך אחד, אימפקט גדול'
     }
@@ -418,10 +419,10 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   'TOP_PERFORMING_TEAM': (data) => ({
     type: 'KPI_BIG_NUMBER',
     props: {
-      value: data.kpi.top_performing_team.actual,
-      label: data.kpi.top_performing_team.name,
-      prefix: '',
-      subtext: `יעד: ${(data.kpi.top_performing_team.target / 1000000).toFixed(0)}M - הגיעו ל-${(data.kpi.top_performing_team.actual / 1000000).toFixed(2)}M`
+      value: (data.kpi.top_performing_team.actual / 1000000).toFixed(2),
+      label: `${data.kpi.top_performing_team.name} - ${data.kpi.top_performing_team.client}`,
+      suffix: 'M',
+      subtext: `יעד: ${(data.kpi.top_performing_team.target / 1000000).toFixed(0)} מיליון`
     }
   }),
 
@@ -462,7 +463,7 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
       cards: data.consultants.slice(0, 4).map(c => ({
         title: c.name,
         description: c.role,
-        image: c.image
+        icon: c.image ? `<img src="${c.image}" class="w-12 h-12 rounded-full object-cover" />` : c.name.charAt(0)
       }))
     }
   }),

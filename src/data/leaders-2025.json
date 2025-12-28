@@ -1,0 +1,262 @@
+{
+  "company": {
+    "name": "LEADERS",
+    "year": 2025,
+    "employees_count": 35,
+    "slogan": "סיכום שנה LEADERS 2025"
+  },
+  "finance": {
+    "total_revenue_2025": null,
+    "total_revenue_2024": null,
+    "strongest_quarter": "Q2",
+    "strongest_quarter_deal": {
+      "client": "פריזבי",
+      "brands": ["אקספנג", "רנו"],
+      "description": "הפקות מדהימות עם משפיענים מעניינים",
+      "influencers": ["מנור סולומון", "אסי ישראלוף", "טליה עובדיה", "אלכס שולץ", "רון יוחננוב"],
+      "team_credits": ["יובל המלכה - ניהול לקוח", "יואב - מהלכי מדיה", "קריאייטיב מעולה"]
+    },
+    "top_revenue_clients": [
+      {
+        "name": "קולגייט",
+        "revenue_2024": null,
+        "revenue_2025": null,
+        "growth_pct": null,
+        "teams_credit": ["צוות נועה", "צוות אלית"],
+        "projects": [
+          { "name": "מרידול", "url": "https://drive.google.com/drive/folders/13ClYngGaZfK07yU09cDhJuNtRYC3eZO6" },
+          { "name": "טוטאל סאמר", "url": "https://drive.google.com/drive/folders/1WC00IYQLU_Zamzup_oMLZdarb0ZiF0xe" }
+        ]
+      },
+      {
+        "name": "Seacret",
+        "revenue_2024": null,
+        "revenue_2025": null,
+        "growth_pct": null,
+        "teams_credit": ["צוות נועה", "צוות אלית"],
+        "roi": 7,
+        "roi_month": "נובמבר",
+        "projects": [
+          { "name": "וידאו 1", "url": "https://drive.google.com/file/d/1Gr3uGvg--UKqAjpQ9o63cX51K2isoKcN/view" },
+          { "name": "וידאו 2", "url": "https://drive.google.com/file/d/199qBStDQmFfTKSC7IkTyDJES8ZW-pmDN/view" }
+        ]
+      },
+      {
+        "name": "משרד התיירות",
+        "description": "לקוח שהצלחתם לפצח ב-2023 ולנהל בצורה מרשימה",
+        "teams_credit": [],
+        "projects": [
+          { "url": "/vids/tayarut/1.mp4", "local": true },
+          { "url": "/vids/tayarut/telaviv_bike.mp4", "local": true },
+          { "url": "/vids/tayarut/Vitamin T by LDRS June 25 (1).mp4", "local": true }
+        ]
+      },
+      {
+        "name": "H&M",
+        "teams_credit": ["צוות נועה סבגי"],
+        "achievement": "עברו יעדי מכירות",
+        "result": "פתח פתח לעבודה על מותגים נוספים בקבוצה"
+      }
+    ],
+    "coffee_calculation": {
+      "aroma_medium_price": 13,
+      "cups_per_employee": null,
+      "total_cups": null
+    },
+    "roi_best": {
+      "client": "Seacret",
+      "month": "נובמבר",
+      "roi": 7,
+      "description": "כל שקל שהושקע במהלכי המדיה והמשפיעניות החזיר פי שבעה"
+    }
+  },
+  "campaigns": {
+    "viral_campaign_2025": {
+      "name": "אקספנג מבית פריזבי",
+      "top_influencer": "טליה עובדיה",
+      "views": 800000,
+      "instagram_url": "https://www.instagram.com/reel/DMVUIuBoVa_/",
+      "description": "הקמפיין הכי ויראלי של LEADERS ב-2025"
+    },
+    "client_feedback_keywords": [
+      { "word": "מהמם!!!", "rank": 1, "note": "עם 3 סימני קריאה" },
+      { "word": "אהבתי", "rank": 2 },
+      { "word": "תקשיבו", "rank": 3, "context": "תקשיבו זה מושלם, תקשיבו זה מהמם, תקשיבו אהבתי ממש" }
+    ],
+    "enzo_sodastream": {
+      "name": "השקת האנזו של סודה סטרים",
+      "description": "הפרויקט המורכב ביותר טכנולוגית",
+      "highlights": [
+        "אתר עם ממשק AI ייחודי",
+        "גולשים הקלידו מילים חופשיות וה-AI יצר פרשנות מאוירת",
+        "גלריה פתוחה עם לייקים ושיתוף",
+        "תחרות עם זוכים שבועיים",
+        "משפיענים מעולמות האמנות והעיצוב"
+      ],
+      "team": [
+        { "name": "דלין", "role": "ניהול לקוח" },
+        { "name": "לירן", "role": "קריאייטיב" },
+        { "name": "עידו", "role": "הוצאה לפועל והמורכבות הטכנולוגית" }
+      ],
+      "client_quote": {
+        "from": "עמית - מנהלת המותג",
+        "time": "21:30 בערב",
+        "word": "מהמם"
+      },
+      "projects": [
+        { "url": "/vids/sodastream/Final_5.mp4", "local": true },
+        { "url": "/vids/sodastream/instagram_clip.mp4", "local": true }
+      ],
+      "local_videos": [
+        "/vids/sodastream/Final_5.mp4",
+        "/vids/sodastream/instagram_clip.mp4"
+      ]
+    }
+  },
+  "influencers": {
+    "total_2025": null,
+    "top_influencer": {
+      "name": "טליה עובדיה",
+      "campaign": "אקספנג מבית פריזבי",
+      "views": 800000
+    }
+  },
+  "culture": {
+    "thursday_happy_count": 52,
+    "thursday_happy_highlight": "חמישי שמח עם גלידה גולדה",
+    "company_events_count": null,
+    "volunteering_count": null,
+    "coffee_corner_joke": {
+      "most_coffee": "יואב",
+      "note": "עלייה חריגה בצריכת הקפאין אחרי שהתחלפו פולי הקפה. מומלץ לבדוק אם הוא ישן בלילה.",
+      "previous_champion": "אסתר",
+      "previous_note": "מאז שהיא לא איתנו - הכורסאות שם פנויות"
+    },
+    "least_productive_time": {
+      "when": "מיד אחרי חמישי שמח בשעה 16",
+      "description": "אתם הופכים לשקי תפוחי אדמה",
+      "recommendation": "שיר תצטרך לקחת בחשבון את השעתיים עבודה שנותרו"
+    },
+    "most_common_meeting_phrase": "יונתן, אתה על מיוט"
+  },
+  "ai": {
+    "time_savings_pct": 16,
+    "equivalent": {
+      "weekly": "יום עבודה מלא בכל שבוע",
+      "yearly": "כמעט חודשיים של עבודה לכל עובד",
+      "hiring_equivalent": "עובד נוסף על כל 6 עובדים - מבלי לגייס"
+    },
+    "summary": "יצרתם כוח עבודה נוסף - בלי שכר, בלי גיוס ובלי עומס ניהולי"
+  },
+  "kpi": {
+    "top_performing_team": {
+      "name": "צוות נועה סבגי",
+      "client": "H&M",
+      "achievement": "עברו יעדי מכירות",
+      "result": "פתח פתח לעבודה על מותגים נוספים בקבוצה"
+    }
+  },
+  "dna": {
+    "values": [
+      {
+        "title": "רלוונטיות תרבותית",
+        "description": "לידרס לא פועלת מתוך מדיה, אלא מתוך תרבות. הבנה עמוקה של מה זז עכשיו, למה זה זז, ואיך מותגים נכנסים לשיחה בלי להרגיש מאולצים."
+      },
+      {
+        "title": "אימפקט לפני אסתטיקה",
+        "description": "קריאייטיב לא נמדד ביופי אלא בהשפעה. כל מהלך נשאל קודם כל: מה זה עושה באמת?"
+      },
+      {
+        "title": "חיבור אנושי כיתרון תחרותי",
+        "description": "היכולת לנהל מערכות יחסים אמיתיות, לא רק קמפיינים, היא חלק מהזהות."
+      },
+      {
+        "title": "תנועה וחדשנות מתמדת",
+        "description": "לידרס לא מחכה שהשוק יתייצב. נכונות לזוז, לנסות, לטעות, ללמוד ולהתעדכן מהר יותר מהסביבה."
+      },
+      {
+        "title": "בעלות ואחריות על תוצאה",
+        "description": "לא ספק, לא עוד זרוע. אתם שותפים של הלקוחות שלכם. DNA של שותף, לא של מבצע."
+      }
+    ]
+  },
+  "consultants": [
+    {
+      "name": "אחיעד סלטון",
+      "role": "יועץ עסקי בכיר",
+      "description": "מלווה בעלי חברות ומנכלים בתהליכים אסטרטגיים וצמתי החלטה משמעותיים",
+      "image": "/imgs/achiaad.jpg"
+    },
+    {
+      "name": "כוכבית ארנון",
+      "role": "מומחית חווית לקוח ובינה מלאכותית",
+      "description": "ניסיון של מעל 25 שנים בניהול בכיר. מרצה באקדמיה, מנהלת AI Broadcast לאנשים עסוקים. לשעבר סמנכלית בהראל ביטוח ופיננסים.",
+      "image": "/imgs/kcochavith.jpg"
+    },
+    {
+      "name": "אסף",
+      "role": "יועץ",
+      "image": "/imgs/asaf.png"
+    },
+    {
+      "name": "מיטל",
+      "role": "יועצת",
+      "image": "/imgs/meital.jpeg"
+    },
+    {
+      "name": "עומרי טל",
+      "role": "יועץ"
+    }
+  ],
+  "vision_2026": {
+    "intro": "ב-2026 LEADERS פועלת כארגון מבוסס AI מקצה לקצה. CRM חכם ואוטומציות מתקדמות מורידים כמעט לחלוטין עבודה טכנית ידנית, ומאפשרים ניהול יעיל של לקוחות, משפיענים ותהליכים.",
+    "bullets": [
+      "אוטומציות והורדת כל הטכנאות בלידרס - המערכות עובדות בשבילנו ולא אנחנו בשבילם",
+      "מודול ספקים והמון תהליכים אוטומאטיים בכספים - מענה לספקים",
+      "תהליכים מסודרים לכל דבר ודבר באמצעות מערכות",
+      "מערכת פרודוקטיביות והטמעת כלי AI באופן קבוע",
+      "שיווק לידרס - הסנדלר הולך יחף",
+      "עבודה על 200 לקוחות קבועים והחדרת מוצר רלוונטי אליהם",
+      "חיזוק העבודה של אופליין - אונליין",
+      "קהילת משפיעני הפצה ו-UGC",
+      "קשרי סוכנויות ועבודה חכמה מולם",
+      "הקמת מחלקת קריאטיב AI - גיוס מומחה AI ויוצרת תוכן AI"
+    ],
+    "targets": [
+      "הרחבה משמעותית של סל השירותים",
+      "הגדלת הכנסות החברה ב-25%",
+      "הגדלת הערך שלנו מול כל הספקים והסוכנויות",
+      "הרחבת פעילות הגלובל ומיסוד עבודת הגלובל ללקוחות ישראלים בחול",
+      "רכישת חברת דיגיטל/מדיה נוספת להצמחה מהירה",
+      "פיתוח עסקי - אגנט AI ללקוחות ודשבורד 360"
+    ],
+    "growth_scenarios": {
+      "scenario_1": {
+        "name": "המשך הקצב הנוכחי",
+        "employees_growth": "20-30%",
+        "revenue_growth": "15-25%",
+        "multiplier": "פי 1.4-1.6",
+        "notes": "גיוס מדוד, תלות גבוהה באנשים ובזמן"
+      },
+      "scenario_2": {
+        "name": "האצה חכמה מבוססת AI",
+        "employees_growth": "10-15%",
+        "revenue_growth": "30-40%",
+        "multiplier": "פי 1.8-2.1",
+        "notes": "אוטומציה, מוצריזציה, פחות תפקידים תפעוליים, עלייה ברווחיות"
+      }
+    }
+  },
+  "rap_summary": {
+    "lyrics": "ב-2025 לידרס על המפה, זה כבר לא וייב זה עובדה\nמספרים עולים, לקוחות חוזרים, כל הצלחה פה עבודה\nצוות נועה מריץ יעדים, סוגר מהלכים בלי רעש\nצוות אלית מגדיל תקציבים, יודע להפוך חזון לממש\nקריאייטיב חד, מדיה מדויקת, כל בורג במקום\nניהול לקוח מחזיק חזק, גם כשנהיה קצת חם\nזה לא קסם, זה אנשים, זה לב, מוח ודיוק\nלידרס לא רק שרדה את 2025 - היא יצאה ממנה בחיוך"
+  },
+  "topics": [
+    "יעדים",
+    "אבני דרך", 
+    "חדשנות",
+    "אתגרים",
+    "תרבות ארגונית",
+    "צמיחה",
+    "מבט קדימה"
+  ]
+}

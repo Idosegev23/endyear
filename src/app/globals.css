@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===================================
+   CSS Custom Properties
+=================================== */
+:root {
+  --color-bg-base: #EBECEC;
+  --color-near-black: #040606;
+  --color-gold-main: #DDB258;
+  --color-gold-secondary: #AB8492;
+  --color-green-accent: #175933;
+  --color-deep-black: #0B0B0B;
+  --color-border: #E5E7EB;
+}
+
+/* ===================================
+   Base Styles
+=================================== */
+@layer base {
+  html {
+    direction: rtl;
+    text-align: right;
+  }
+  
+  body {
+    @apply font-heebo bg-bg-base text-near-black;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+    letter-spacing: -0.02em;
+  }
+  
+  ::selection {
+    @apply bg-gold-main text-near-black;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded;
+  }
+}
+
+/* ===================================
+   Component Classes
+=================================== */
+@layer components {
+  /* Display Typography */
+  .text-display-xl {
+    @apply text-5xl md:text-7xl font-extrabold;
+    letter-spacing: -0.03em;
+  }
+  
+  .text-display-lg {
+    @apply text-3xl md:text-5xl font-bold;
+    letter-spacing: -0.02em;
+  }
+  
+  .text-display-md {
+    @apply text-xl md:text-3xl font-semibold;
+  }
+  
+  /* Cards - Square/Sharp */
+  .card {
+    @apply bg-white rounded-lg shadow-card transition-all duration-200;
+  }
+  
+  .card:hover {
+    @apply shadow-card-hover;
+    transform: translateY(-2px);
+  }
+  
+  .visual-card {
+    @apply bg-white rounded-lg shadow-card p-6;
+  }
+  
+  /* Glass Effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-md border-b border-gray-100;
+  }
+  
+  /* Buttons - Sharp corners */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-8 py-4 bg-near-black text-white font-semibold rounded-md transition-all duration-200;
+  }
+  
+  .btn-primary:hover {
+    @apply bg-gold-main text-near-black;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 bg-gray-100 text-near-black font-medium rounded-md transition-all duration-200;
+  }
+  
+  .btn-secondary:hover {
+    @apply bg-gray-200;
+  }
+  
+  /* Input - Sharp corners */
+  .input-chat {
+    @apply w-full px-5 py-4 bg-white border border-gray-200 rounded-lg text-base shadow-input transition-all duration-200;
+  }
+  
+  .input-chat:focus {
+    @apply outline-none border-gold-main ring-2 ring-gold-main/20;
+  }
+  
+  .input-chat::placeholder {
+    @apply text-gray-400;
+  }
+}
+
+/* ===================================
+   Utilities
+=================================== */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Subtle grain overlay */
+  .grain-overlay::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.012;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 9999;
+  }
+}

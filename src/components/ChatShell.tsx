@@ -5,8 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { ChatMessage, TypingIndicator } from './ChatMessage';
 import { ImpactPanel } from './ImpactPanel';
-import { getOpeningQuestions, FlowQuestion } from '@/lib/flowQuestions';
-import { SuggestedQuestions, SuggestedQuestionsCompact } from './SuggestedQuestions';
+import type { FlowQuestion } from '@/lib/flowQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
 
 interface ChatApiResponse {
@@ -22,7 +21,6 @@ export function ChatShell() {
   const [input, setInput] = useState('');
   const [hasVisual, setHasVisual] = useState(false);
   const [askedIntents, setAskedIntents] = useState<string[]>([]);
-  const [suggestedQuestions, setSuggestedQuestions] = useState<FlowQuestion[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
@@ -49,8 +47,6 @@ export function ChatShell() {
 
   useEffect(() => {
     inputRef.current?.focus();
-    // הצג שאלות פתיחה
-    setSuggestedQuestions(getOpeningQuestions());
   }, []);
 
 
@@ -95,16 +91,9 @@ export function ChatShell() {
       setCurrentVisual(data.visual_payload);
       setDebugInfo(data.intent_id, data.confidence);
       
-      // עדכן intents ושאלה הבאה
+      // עדכן intents
       if (data.intent_id !== 'UNKNOWN' && data.intent_id !== 'ERROR') {
         setAskedIntents(prev => [...prev, data.intent_id]);
-      }
-      
-      // עדכן שאלה הבאה מהשרת
-      if (data.next_question) {
-        setSuggestedQuestions([data.next_question]);
-      } else {
-        setSuggestedQuestions([]);
       }
 
     } catch (error) {
@@ -178,60 +167,40 @@ export function ChatShell() {
         >
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-4 scrollbar-hide">
-            {messages.length === 0 && suggestedQuestions.length > 0 && (
+            {messages.length === 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="h-full flex flex-col items-center justify-center px-4"
               >
-                {/* Welcome */}
+                {/* Welcome - Itamar leads */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="text-center mb-10"
+                  className="text-center"
                 >
-                  <h3 className="text-2xl font-semibold mb-2">בוקר טוב</h3>
-                  <p className="text-gray-500 text-sm">
-                    מוכנים לסיכום השנה?
-                  </p>
-                </motion.div>
-
-                {/* Bot suggests - Itamar types freely */}
-                <motion.div className="w-full max-w-lg">
-                  {/* Bot message */}
                   <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="flex items-start gap-3"
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.3, type: 'spring' }}
+                    className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-near-black flex items-center justify-center text-white text-3xl font-bold shadow-xl"
                   >
-                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-gold-main to-gold-secondary flex items-center justify-center shrink-0 shadow-lg">
-                      <svg className="w-6 h-6 text-near-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <motion.div 
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.8 }}
-                      className="flex-1 bg-gray-100 rounded-2xl rounded-tr-sm px-5 py-4"
-                    >
-                      <span className="text-base text-gray-800 leading-relaxed">
-                        {suggestedQuestions[0].botIntro}
-                      </span>
-                    </motion.div>
+                    א
                   </motion.div>
-
-                  {/* Hint to type */}
-                  <motion.p
+                  <h3 className="text-3xl font-bold mb-3">בוקר טוב</h3>
+                  <p className="text-gray-500 text-lg mb-8">
+                    איתמר, אתה מוביל - תתחיל לשאול
+                  </p>
+                  
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 1.5 }}
-                    className="text-xs text-gray-400 text-center mt-6"
+                    transition={{ delay: 0.8 }}
+                    className="text-sm text-gray-400"
                   >
-                    הקלידו תשובה למטה
-                  </motion.p>
+                    הקלד למטה והבוט יענה
+                  </motion.div>
                 </motion.div>
               </motion.div>
             )}
@@ -243,18 +212,6 @@ export function ChatShell() {
               {isTyping && <TypingIndicator />}
             </AnimatePresence>
 
-            {/* Bot suggests next topic - Itamar types freely */}
-            {hasVisual ? (
-              <SuggestedQuestionsCompact
-                questions={suggestedQuestions}
-                isVisible={!isTyping && messages.length > 0}
-              />
-            ) : (
-              <SuggestedQuestions
-                questions={suggestedQuestions}
-                isVisible={!isTyping && messages.length > 0}
-              />
-            )}
             
             <div ref={messagesEndRef} />
           </div>

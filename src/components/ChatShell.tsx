@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/lib/store';
 import { ImpactPanel } from './ImpactPanel';
-import { BotResponse } from './visuals';
 import type { FlowQuestion } from '@/lib/flowQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
 
@@ -17,20 +16,26 @@ interface ChatApiResponse {
   missing_fields: string[];
 }
 
+interface Message {
+  id: number;
+  role: 'user' | 'bot';
+  text: string;
+  visual?: VisualPayload;
+  isTyping?: boolean;
+}
+
 export function ChatShell() {
   const [input, setInput] = useState('');
   const [askedIntents, setAskedIntents] = useState<string[]>([]);
-  const [userMessages, setUserMessages] = useState<string[]>([]);
-  const [botResponse, setBotResponse] = useState<string>('');
-  const [showVisual, setShowVisual] = useState(false);
-  const [isTypingResponse, setIsTypingResponse] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [typingMessageId, setTypingMessageId] = useState<number | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   
   const {
     isTyping,
     setIsTyping,
     setCurrentVisual,
-    currentVisual,
     mode,
     setMode,
     setDebugInfo,
@@ -41,6 +46,10 @@ export function ChatShell() {
     inputRef.current?.focus();
   }, []);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, typingMessageId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -48,11 +57,16 @@ export function ChatShell() {
 
     const userMessage = input.trim();
     setInput('');
-    setUserMessages(prev => [...prev, userMessage]);
+    
+    // Add user message
+    const userMsgId = Date.now();
+    setMessages(prev => [...prev, {
+      id: userMsgId,
+      role: 'user',
+      text: userMessage
+    }]);
+
     setIsTyping(true);
-    setBotResponse('');
-    setShowVisual(false);
-    setIsTypingResponse(false);
 
     try {
       const response = await fetch('/api/chat', {
@@ -66,9 +80,17 @@ export function ChatShell() {
 
       const data: ChatApiResponse = await response.json();
 
-      setIsTyping(false);
-      setIsTypingResponse(true);
-      setBotResponse(data.answer_text);
+      // Add bot message with typing animation
+      const botMsgId = Date.now() + 1;
+      setMessages(prev => [...prev, {
+        id: botMsgId,
+        role: 'bot',
+        text: data.answer_text,
+        visual: data.visual_payload,
+        isTyping: true
+      }]);
+      
+      setTypingMessageId(botMsgId);
       setCurrentVisual(data.visual_payload);
       setDebugInfo(data.intent_id, data.confidence);
       
@@ -78,24 +100,29 @@ export function ChatShell() {
 
     } catch (error) {
       console.error('Chat error:', error);
-      setBotResponse('משהו השתבש. ננסה שוב?');
+      const errorMsgId = Date.now() + 1;
+      setMessages(prev => [...prev, {
+        id: errorMsgId,
+        role: 'bot',
+        text: 'משהו השתבש. ננסה שוב?',
+        isTyping: true
+      }]);
+      setTypingMessageId(errorMsgId);
+    } finally {
       setIsTyping(false);
-      setIsTypingResponse(true);
     }
   };
 
-  const handleTypingComplete = () => {
-    setIsTypingResponse(false);
-    setShowVisual(true);
+  const handleTypingComplete = (msgId: number) => {
+    setTypingMessageId(null);
+    setMessages(prev => prev.map(m => 
+      m.id === msgId ? { ...m, isTyping: false } : m
+    ));
   };
-
-  // Check if visual should show alongside text or replace it
-  const isTextOnlyVisual = currentVisual && 
-    (currentVisual.type === 'FORMATTED_TEXT' || currentVisual.type === 'ANIMATED_LIST');
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      {/* Header - Dark */}
+      {/* Header */}
       <header className="bg-near-black px-6 py-3 flex items-center justify-between shrink-0 z-20">
         <div className="flex items-center gap-4">
           <button
@@ -114,24 +141,15 @@ export function ChatShell() {
         
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-xs">
-            <span className={mode === 'admin' ? 'text-gold-main' : 'text-gray-500'}>
-              Admin
-            </span>
+            <span className={mode === 'admin' ? 'text-gold-main' : 'text-gray-500'}>Admin</span>
             <button
               onClick={() => setMode(mode === 'admin' ? 'show' : 'admin')}
-              className={`w-8 h-4 rounded transition-colors ${
-                mode === 'show' ? 'bg-gold-main' : 'bg-gray-600'
-              }`}
+              className={`w-8 h-4 rounded transition-colors ${mode === 'show' ? 'bg-gold-main' : 'bg-gray-600'}`}
             >
-              <div className={`w-3 h-3 rounded bg-white shadow transform transition-transform ${
-                mode === 'show' ? 'translate-x-0.5' : 'translate-x-4'
-              }`} />
+              <div className={`w-3 h-3 rounded bg-white shadow transform transition-transform ${mode === 'show' ? 'translate-x-0.5' : 'translate-x-4'}`} />
             </button>
-            <span className={mode === 'show' ? 'text-gold-main' : 'text-gray-500'}>
-              Show
-            </span>
+            <span className={mode === 'show' ? 'text-gold-main' : 'text-gray-500'}>Show</span>
           </div>
-
           <button
             onClick={() => setScene('vision2026')}
             className="px-3 py-1.5 text-xs font-medium bg-white/10 text-white rounded hover:bg-white/20 transition-colors"
@@ -145,27 +163,22 @@ export function ChatShell() {
       <div className="flex-1 flex overflow-hidden">
         
         {/* LEFT SIDE - WHITE - Itamar's Input */}
-        <motion.div 
-          layout
-          className="w-[35%] flex flex-col bg-white border-l border-gray-200"
-        >
-          {/* Itamar's messages history */}
+        <motion.div layout className="w-[35%] flex flex-col bg-white border-l border-gray-200">
           <div className="flex-1 overflow-y-auto p-6 scrollbar-hide flex flex-col justify-end">
             <div className="space-y-4">
-              {userMessages.map((msg, index) => (
+              {messages.filter(m => m.role === 'user').map((msg) => (
                 <motion.div
-                  key={index}
+                  key={msg.id}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-gray-50 rounded-2xl px-5 py-4"
                 >
-                  <p className="text-gray-800 text-xl leading-relaxed">{msg}</p>
+                  <p className="text-gray-800 text-xl leading-relaxed">{msg.text}</p>
                 </motion.div>
               ))}
             </div>
           </div>
 
-          {/* Input Area */}
           <div className="shrink-0 p-4 border-t border-gray-200">
             <form onSubmit={handleSubmit} className="relative">
               <input
@@ -175,11 +188,11 @@ export function ChatShell() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="הקלד שאלה..."
                 className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-lg focus:outline-none focus:border-gold-main focus:ring-2 focus:ring-gold-main/20 pl-14"
-                disabled={isTyping || isTypingResponse}
+                disabled={isTyping || typingMessageId !== null}
               />
               <button
                 type="submit"
-                disabled={!input.trim() || isTyping || isTypingResponse}
+                disabled={!input.trim() || isTyping || typingMessageId !== null}
                 className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-gold-main flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gold-main/90 transition-colors"
               >
                 <svg className="w-5 h-5 text-near-black rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -190,92 +203,128 @@ export function ChatShell() {
           </div>
         </motion.div>
 
-        {/* RIGHT SIDE - BLACK - Bot Response */}
-        <motion.div 
-          layout
-          className="w-[65%] bg-deep-black flex flex-col overflow-hidden"
-        >
-          <AnimatePresence mode="wait">
-            {/* Loading state */}
-            {isTyping && (
-              <motion.div
-                key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="h-full flex items-center justify-center"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-1">
-                    <motion.div
-                      animate={{ y: [0, -8, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
-                      className="w-3 h-3 rounded-full bg-gold-main"
-                    />
-                    <motion.div
-                      animate={{ y: [0, -8, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
-                      className="w-3 h-3 rounded-full bg-gold-main"
-                    />
-                    <motion.div
-                      animate={{ y: [0, -8, 0] }}
-                      transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
-                      className="w-3 h-3 rounded-full bg-gold-main"
-                    />
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Typing response */}
-            {!isTyping && isTypingResponse && botResponse && (
-              <motion.div
-                key="typing-response"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="h-full"
-              >
-                <BotResponse 
-                  text={botResponse} 
-                  speed={20}
-                  onComplete={handleTypingComplete}
+        {/* RIGHT SIDE - BLACK - Bot Responses (Chat Style) */}
+        <motion.div layout className="w-[65%] bg-deep-black flex flex-col overflow-hidden">
+          <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
+            <div className="space-y-6">
+              {messages.filter(m => m.role === 'bot').map((msg) => (
+                <BotMessageBubble 
+                  key={msg.id}
+                  message={msg}
+                  isTyping={msg.id === typingMessageId}
+                  onTypingComplete={() => handleTypingComplete(msg.id)}
                 />
-              </motion.div>
-            )}
-
-            {/* Visual content after typing is complete */}
-            {!isTyping && !isTypingResponse && showVisual && currentVisual && (
-              <motion.div
-                key="visual"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="h-full"
-              >
-                <ImpactPanel expanded={true} />
-              </motion.div>
-            )}
-
-            {/* Empty state */}
-            {!isTyping && !isTypingResponse && !showVisual && !botResponse && (
-              <motion.div
-                key="empty"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="h-full flex items-center justify-center"
-              >
+              ))}
+              
+              {/* Loading indicator */}
+              {isTyping && (
                 <motion.div
-                  animate={{ opacity: [0.2, 0.4, 0.2] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="w-16 h-16 rounded-2xl bg-gold-main/10"
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex items-center gap-3 px-4"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-gold-main/20 flex items-center justify-center">
+                    <div className="flex gap-1">
+                      <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0 }} className="w-1.5 h-1.5 rounded-full bg-gold-main" />
+                      <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.1 }} className="w-1.5 h-1.5 rounded-full bg-gold-main" />
+                      <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 0.5, repeat: Infinity, delay: 0.2 }} className="w-1.5 h-1.5 rounded-full bg-gold-main" />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              
+              <div ref={messagesEndRef} />
+            </div>
+          </div>
         </motion.div>
       </div>
     </div>
+  );
+}
+
+// Bot Message Bubble Component
+function BotMessageBubble({ 
+  message, 
+  isTyping, 
+  onTypingComplete 
+}: { 
+  message: Message; 
+  isTyping: boolean;
+  onTypingComplete: () => void;
+}) {
+  const [displayedText, setDisplayedText] = useState('');
+  const [showVisual, setShowVisual] = useState(false);
+
+  useEffect(() => {
+    if (!isTyping) {
+      setDisplayedText(message.text);
+      setShowVisual(true);
+      return;
+    }
+
+    setDisplayedText('');
+    setShowVisual(false);
+    let index = 0;
+    
+    const interval = setInterval(() => {
+      if (index < message.text.length) {
+        setDisplayedText(message.text.slice(0, index + 1));
+        index++;
+      } else {
+        clearInterval(interval);
+        setTimeout(() => {
+          setShowVisual(true);
+          onTypingComplete();
+        }, 300);
+      }
+    }, 15);
+
+    return () => clearInterval(interval);
+  }, [message.text, isTyping, onTypingComplete]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-4"
+    >
+      {/* Text bubble */}
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl bg-gold-main/20 flex items-center justify-center shrink-0">
+          <svg className="w-5 h-5 text-gold-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div className="flex-1 bg-gray-900 rounded-2xl rounded-tr-sm px-5 py-4">
+          <p className="text-white text-lg leading-relaxed whitespace-pre-line">
+            {displayedText}
+            {isTyping && (
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 0.6, repeat: Infinity }}
+                className="inline-block w-0.5 h-5 bg-gold-main ml-1 align-middle"
+              />
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* Visual - appears after text is done */}
+      <AnimatePresence>
+        {showVisual && message.visual && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: 'spring', bounce: 0.3 }}
+            className="mr-13 rounded-2xl overflow-hidden bg-gray-900 border border-gray-800"
+            style={{ marginRight: '52px' }}
+          >
+            <div className="h-[400px]">
+              <ImpactPanel expanded={true} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

@@ -16,3 +16,4 @@ export { VideoGallery } from './VideoGallery';
 export { ComparisonTable } from './ComparisonTable';
 export { ConsultantCards } from './ConsultantCards';
 export { AudioPlayer } from './AudioPlayer';
+export { LeaderboardWithVideos } from './LeaderboardWithVideos';

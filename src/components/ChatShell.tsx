@@ -19,7 +19,8 @@ import {
   VideoGallery,
   ComparisonTable,
   ConsultantCards,
-  AudioPlayer
+  AudioPlayer,
+  LeaderboardWithVideos
 } from './visuals';
 import type { FlowQuestion } from '@/lib/flowQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
@@ -292,6 +293,8 @@ function VisualRenderer({ visual }: { visual: VisualPayload }) {
       return <ConsultantCards {...p} />;
     case 'AUDIO_PLAYER':
       return <AudioPlayer {...p} />;
+    case 'LEADERBOARD_WITH_VIDEOS':
+      return <LeaderboardWithVideos {...p} />;
     default:
       return null;
   }

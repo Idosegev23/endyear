@@ -289,20 +289,25 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   }),
 
   'TOP_REVENUE_CLIENT_2025': (data) => ({
-    type: 'LEADERBOARD',
+    type: 'LEADERBOARD_WITH_VIDEOS',
     props: {
       title: 'לקוחות בצמיחה 2025',
       items: data.finance.top_revenue_clients
-        .filter(c => c.growth_pct)
-        .sort((a, b) => (b.growth_pct || 0) - (a.growth_pct || 0))
+        .filter((c: { growth_pct?: number }) => c.growth_pct)
+        .sort((a: { growth_pct?: number }, b: { growth_pct?: number }) => (b.growth_pct || 0) - (a.growth_pct || 0))
         .slice(0, 3)
-        .map((c, i) => ({
+        .map((c: { name: string; growth_pct?: number }, i: number) => ({
           rank: i + 1,
           name: c.name,
           value: c.growth_pct,
           suffix: '%',
           subtitle: 'צמיחה'
-        }))
+        })),
+      videos: [
+        { url: '/vids/colgate/Meridol Bathroom 6s 16x9 V05 HQ.mp4', title: 'קולגייט - מרידול' },
+        { url: '/vids/seacret/IMG_6855.MP4', title: 'Seacret' },
+        { url: '/vids/tayarut/1.mp4', title: 'משרד התיירות' }
+      ]
     }
   }),
 
@@ -492,35 +497,38 @@ function detectIntent(text: string): string | null {
   const intentPatterns: [string[], string][] = [
     // עדיפות גבוהה - ביטויים ספציפיים
     [['שיר', 'ראפ', 'חרוזים', 'לסיום', 'שיר קצר'], 'RAP_SUMMARY'],
-    [['שבר את הרשת', 'ויראלי', 'טראפיק הכי גבוה', 'טליה'], 'VIRAL_CAMPAIGN_2025'],
+    [['שבר את הרשת', 'ויראלי', 'טראפיק הכי גבוה', 'טליה', 'הכי ויראלי'], 'VIRAL_CAMPAIGN_2025'],
     [['פחות פרודוקטיבי', 'תפוחי אדמה', 'יום הכי פחות'], 'LEAST_PRODUCTIVE_TIME'],
     [['קצב צמיחה', 'תחזית', 'דצמבר 2026', '31 בדצמבר', 'מספר עובדים'], 'GROWTH_FORECAST'],
+    [['משפט הכי נפוץ', 'משפט נפוץ', 'פגישות הוידאו', 'פגישות וידאו', 'נאמר בפגישות', 'מיוט', 'על מיוט'], 'MOST_COMMON_MEETING_PHRASE'],
+    
+    // גודל קפה - תשובה לשאלת המשך
+    [['קטן', 'בינוני', 'גדול'], 'COFFEE_TO_REVENUE'],
     
     // שאלות ראשיות
     [['ראשי פרקים', 'סיכום שנה', 'בוקר טוב', 'נושאים', 'לכל עובדי'], 'YEAR_RECAP_HEADLINES'],
     [['חפרת', 'תמציתי', 'קצר', 'לא חופר', 'מסקרן', 'עניין'], 'YEAR_RECAP_SHORT'],
     
-    // כוסות קפה - לפני לקוחות
-    [['כוסות קפה', 'קפה בארומה', 'ארומה', 'בינוני', 'ממירים', 'לכוסות', 'כוסות לכל עובד', 'כמה כוסות', 'הכנסות וממירים'], 'COFFEE_TO_REVENUE'],
+    // כוסות קפה - שאלה ראשונית
+    [['כוסות קפה', 'קפה בארומה', 'ארומה', 'ממירים אותן לכוסות', 'לכוסות', 'כוסות לכל עובד', 'כמה כוסות', 'הכנסות וממירים'], 'COFFEE_SIZE_QUESTION'],
     
     // לקוחות
     [['לקוח גדול', 'כיס עמוק', 'הכיס העמוק', 'קולגייט', 'לקוח הכי גדול', 'תקציב גדול'], 'TOP_REVENUE_CLIENT_2025'],
     [['רבעון חזק', 'רבעון הכי', 'עסקה', 'פריזבי', 'אקספנג'], 'STRONGEST_QUARTER'],
     
     // תרבות
-    [['מטבח', 'מכונת קפה', 'קפאין', 'פינת קפה', 'הכי הרבה זמן במטבח'], 'COFFEE_CORNER_JOKE'],
+    [['מטבח', 'מכונת קפה', 'קפאין', 'פינת קפה', 'הכי הרבה זמן במטבח', 'בילה הכי הרבה'], 'COFFEE_CORNER_JOKE'],
     [['חמישי שמח', 'אירועי חברה', 'גיבוש', 'הווי', 'work life', 'balance'], 'CULTURE_EVENTS'],
     
     // פידבק ומילים
     [['פידבק', '3 מילים', 'לקוחות אמרו', 'מילים הכי נפוצות'], 'CLIENT_FEEDBACK_KEYWORDS'],
     
     // AI וטכנולוגיה
-    [['ai', 'חסכנו', 'זמן חסכנו', 'ייעול', 'בינה מלאכותית', 'כלי ai'], 'AI_TIME_SAVINGS'],
+    [['ai', 'חסכנו', 'זמן חסכנו', 'ייעול', 'בינה מלאכותית', 'כלי ai', 'הטמעת כלי'], 'AI_TIME_SAVINGS'],
     [['אנזו', 'סודה סטרים', 'מורכב טכנולוגית', 'הכי מורכב'], 'ENZO_SODASTREAM'],
     
     // מדדים
     [['roi', 'החזר', 'תשואה', 'נתון מרשים', 'מדד roi'], 'ROI_BEST'],
-    [['משפט נפוץ', 'פגישות וידאו', 'זום', 'מיוט'], 'MOST_COMMON_MEETING_PHRASE'],
     [['צוות הכי', 'שיאני', 'kpi', 'שיאני ביצועים', 'עמידה ביעדים'], 'TOP_PERFORMING_TEAM'],
     
     // ערכים

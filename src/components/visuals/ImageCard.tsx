@@ -22,7 +22,7 @@ export function ImageCard({ src, title, description }: ImageCardProps) {
           src={src}
           alt={title || 'Image'}
           fill
-          className="object-cover"
+          className="object-contain"
           sizes="(max-width: 768px) 100vw, 50vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />

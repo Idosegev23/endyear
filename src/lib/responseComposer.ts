@@ -17,7 +17,8 @@ export type VisualType =
   | 'COMPARISON_TABLE'
   | 'VIDEO_GALLERY'
   | 'CONSULTANT_CARDS'
-  | 'AUDIO_PLAYER';
+  | 'AUDIO_PLAYER'
+  | 'LEADERBOARD_WITH_VIDEOS';
 
 export interface VisualPayload {
   type: VisualType;

@@ -21,15 +21,15 @@ export function ImageWithKpi({ src, value, label, suffix = '', prefix = '', subt
       transition={{ type: 'spring', bounce: 0.3 }}
       className="relative overflow-hidden rounded-2xl bg-deep-black"
     >
-      <div className="relative aspect-video w-full">
+      <div className="relative aspect-video w-full bg-deep-black">
         <Image
           src={src}
           alt={label}
           fill
-          className="object-cover opacity-40"
+          className="object-contain opacity-60"
           sizes="(max-width: 768px) 100vw, 50vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
       </div>
       
       <div className="absolute inset-0 flex flex-col items-center justify-center p-8">

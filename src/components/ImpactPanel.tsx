@@ -24,67 +24,15 @@ export function ImpactPanel({ expanded = false }: ImpactPanelProps) {
   const renderVisual = () => {
     if (!currentVisual) {
       return (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="h-full flex flex-col items-center justify-center text-center px-8 relative"
-        >
-          {/* Animated background pattern */}
-          <motion.div 
-            animate={{ 
-              backgroundPosition: ['0% 0%', '100% 100%'],
-            }}
-            transition={{ duration: 20, repeat: Infinity, repeatType: 'reverse' }}
-            className="absolute inset-0 opacity-[0.08]"
-            style={{
-              backgroundImage: `radial-gradient(circle at 2px 2px, #C9A04A 1px, transparent 0)`,
-              backgroundSize: '48px 48px'
-            }}
-          />
-
-          {/* Floating shapes - dark */}
+        <div className="h-full flex items-center justify-center">
           <motion.div
-            animate={{ 
-              y: [0, -20, 0],
-              rotate: [0, 5, 0]
-            }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-20 left-20 w-24 h-24 rounded-3xl bg-white/5"
-          />
-          <motion.div
-            animate={{ 
-              y: [0, 20, 0],
-              rotate: [0, -5, 0]
-            }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            className="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-gold-main/10"
-          />
-
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5, type: 'spring' }}
-            className="relative z-10"
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity }}
+            className="w-16 h-16 rounded-2xl bg-gold-main/20 flex items-center justify-center"
           >
-            {/* Icon */}
-            <motion.div 
-              animate={{ 
-                scale: [1, 1.05, 1],
-              }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 flex items-center justify-center border border-white/10"
-            >
-              <svg className="w-12 h-12 text-gold-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-              </svg>
-            </motion.div>
-
-            <h3 className="text-2xl font-bold mb-3 text-white">Impact Panel</h3>
-            <p className="text-gray-400 max-w-sm text-lg">
-              שאלו שאלה והנתונים יופיעו כאן עם גרפיקות מרהיבות
-            </p>
+            <div className="w-8 h-8 rounded-xl bg-gold-main/40" />
           </motion.div>
-        </motion.div>
+        </div>
       );
     }
 

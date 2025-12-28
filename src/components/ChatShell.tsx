@@ -134,45 +134,19 @@ export function ChatShell() {
           className="w-[35%] flex flex-col bg-white border-l border-gray-200"
         >
           {/* Itamar's messages history */}
-          <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
-            {userMessages.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="h-full flex flex-col items-center justify-center"
-              >
+          <div className="flex-1 overflow-y-auto p-6 scrollbar-hide flex flex-col justify-end">
+            <div className="space-y-4">
+              {userMessages.map((msg, index) => (
                 <motion.div
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.3, type: 'spring' }}
-                  className="w-24 h-24 mx-auto mb-6 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-400 text-4xl font-bold"
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gray-50 rounded-2xl px-5 py-4"
                 >
-                  א
+                  <p className="text-gray-800 text-xl leading-relaxed">{msg}</p>
                 </motion.div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">איתמר</h3>
-                <p className="text-gray-500 text-center">
-                  הקלד שאלה והתשובה תופיע בצד ימין
-                </p>
-              </motion.div>
-            ) : (
-              <div className="space-y-4">
-                {userMessages.map((msg, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-start gap-3"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 font-bold shrink-0">
-                      א
-                    </div>
-                    <div className="flex-1 bg-gray-50 rounded-2xl rounded-tr-sm px-4 py-3">
-                      <p className="text-gray-800 text-lg leading-relaxed">{msg}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+              ))}
+            </div>
           </div>
 
           {/* Input Area */}

@@ -305,15 +305,15 @@ export function ChatShell() {
               <motion.div
                 initial={{ rotateX: 25, translateY: '100%' }}
                 animate={{ rotateX: 25, translateY: '-200%' }}
-                transition={{ duration: 60, ease: 'linear' }}
-                className="text-center px-8 max-w-4xl"
+                transition={{ duration: 180, ease: 'linear' }}
+                className="text-center px-8 max-w-5xl"
                 style={{ transformOrigin: 'center bottom' }}
               >
                 {/* Intro */}
-                <p className="text-gold-main text-4xl mb-12">אה איתמר! כתבתי עליכם שיר...</p>
+                <p className="text-gold-main text-6xl mb-16">אה איתמר! כתבתי עליכם שיר...</p>
                 
                 {/* Song lyrics - will scroll up */}
-                <div className="text-3xl md:text-5xl text-gold-main/90 leading-loose whitespace-pre-line font-bold">
+                <div className="text-5xl md:text-7xl text-gold-main/90 leading-relaxed whitespace-pre-line font-bold">
                   {`ב-2025 לידרס על המפה
 זה כבר לא וייב זה עובדה
 
@@ -340,11 +340,11 @@ export function ChatShell() {
                 </div>
 
                 {/* Ending message */}
-                <div className="mt-20 text-5xl md:text-7xl text-gold-main font-bold">
+                <div className="mt-24 text-6xl md:text-8xl text-gold-main font-bold">
                   שתהיה לנו 2026 מדהימה!
                 </div>
                 
-                <div className="mt-6 text-3xl text-white/80">
+                <div className="mt-8 text-4xl text-white/80">
                   אנשים שיוצרים הזדמנויות
                 </div>
 
@@ -352,7 +352,7 @@ export function ChatShell() {
                 <img
                   src="/logo.png"
                   alt="LEADERS"
-                  className="mx-auto mt-12 h-20 opacity-80"
+                  className="mx-auto mt-16 h-32 opacity-80"
                 />
               </motion.div>
             </div>

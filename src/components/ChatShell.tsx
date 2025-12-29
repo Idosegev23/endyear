@@ -310,10 +310,10 @@ export function ChatShell() {
                 style={{ transformOrigin: 'center bottom' }}
               >
                 {/* Intro */}
-                <p className="text-gold-main text-2xl mb-8">אה איתמר! כתבתי עליכם שיר...</p>
+                <p className="text-gold-main text-4xl mb-12">אה איתמר! כתבתי עליכם שיר...</p>
                 
                 {/* Song lyrics - will scroll up */}
-                <div className="text-xl md:text-2xl text-gold-main/90 leading-loose whitespace-pre-line font-bold">
+                <div className="text-3xl md:text-5xl text-gold-main/90 leading-loose whitespace-pre-line font-bold">
                   {`ב-2025 לידרס על המפה
 זה כבר לא וייב זה עובדה
 
@@ -340,11 +340,11 @@ export function ChatShell() {
                 </div>
 
                 {/* Ending message */}
-                <div className="mt-16 text-3xl md:text-4xl text-gold-main font-bold">
+                <div className="mt-20 text-5xl md:text-7xl text-gold-main font-bold">
                   שתהיה לנו 2026 מדהימה!
                 </div>
                 
-                <div className="mt-4 text-xl text-white/80">
+                <div className="mt-6 text-3xl text-white/80">
                   אנשים שיוצרים הזדמנויות
                 </div>
 

@@ -268,7 +268,7 @@ export function ChatShell() {
                     className="flex justify-center mt-8"
                   >
                     <button
-                      onClick={() => setShowSongScreen(true)}
+                      onClick={() => setShowClosingSlide(true)}
                       className="px-8 py-4 bg-gold-main text-near-black font-bold text-xl rounded-2xl hover:bg-gold-main/90 transition-colors shadow-lg"
                     >
                       שנסיים?
@@ -281,175 +281,95 @@ export function ChatShell() {
         </div>
       </div>
       
-      {/* Song Screen */}
-      <AnimatePresence>
-        {showSongScreen && !showClosingSlide && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-deep-black flex flex-col items-center justify-center"
-          >
-            {/* Background glow */}
-            <div className="absolute inset-0 overflow-hidden">
-              <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.1, 0.3, 0.1]
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'easeInOut'
-                }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold-main/20 rounded-full blur-3xl"
-              />
-            </div>
-
-            {/* Intro text */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="relative z-10 text-3xl text-gold-main font-bold mb-8"
-            >
-              אה איתמר! כתבתי עליכם שיר
-            </motion.p>
-
-            {/* Lyrics display */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="relative z-10 max-w-3xl mx-auto text-center px-8"
-            >
-              <div className="text-xl md:text-2xl text-white/90 leading-relaxed whitespace-pre-line">
-                {`ב-2025 לידרס על המפה, זה כבר לא וייב זה עובדה
-מספרים עולים, לקוחות חוזרים, כל הצלחה פה עבודה
-צוות נועה מריץ יעדים, סוגר מהלכים בלי רעש
-צוות אלית מגדיל תקציבים, יודע להפוך חזון לממש
-קריאייטיב חד, מדיה מדויקת, כל בורג במקום
-ניהול לקוח מחזיק חזק, גם כשנהיה קצת חם
-זה לא קסם, זה אנשים, זה לב, מוח ודיוק
-לידרס לא רק שרדה את 2025 - היא יצאה ממנה בחיוך`}
-              </div>
-            </motion.div>
-
-            {/* Audio player */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.5 }}
-              className="relative z-10 mt-8"
-            >
-              <audio
-                src="/vids/sound/song.mp3"
-                autoPlay
-                controls
-                className="w-80"
-              />
-            </motion.div>
-
-            {/* Continue button */}
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2 }}
-              onClick={() => {
-                setShowSongScreen(false);
-                setShowClosingSlide(true);
-              }}
-              className="relative z-10 mt-12 px-8 py-4 bg-gold-main text-near-black font-bold text-xl rounded-2xl hover:bg-gold-main/90 transition-colors"
-            >
-              המשך לסיום
-            </motion.button>
-
-            {/* Close button */}
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              onClick={() => setShowSongScreen(false)}
-              className="absolute top-6 left-6 text-white/60 hover:text-white transition-colors"
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </motion.button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Fullscreen Closing Slide */}
+      {/* Fullscreen Closing Slide with Song */}
       <AnimatePresence>
         {showClosingSlide && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-deep-black flex flex-col items-center justify-center"
+            className="fixed inset-0 z-50 bg-black overflow-hidden"
           >
-            {/* Background glow */}
-            <div className="absolute inset-0 overflow-hidden">
+            {/* Stars background */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black" />
+            
+            {/* Audio - autoplay */}
+            <audio
+              src="/vids/sound/song.mp3"
+              autoPlay
+              className="hidden"
+            />
+
+            {/* Star Wars style crawl container */}
+            <div className="absolute inset-0 flex items-end justify-center overflow-hidden" style={{ perspective: '400px' }}>
               <motion.div
-                animate={{
-                  scale: [1, 1.3, 1],
-                  opacity: [0.2, 0.4, 0.2]
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: 'easeInOut'
-                }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-main/20 rounded-full blur-3xl"
-              />
+                initial={{ rotateX: 25, translateY: '100%' }}
+                animate={{ rotateX: 25, translateY: '-200%' }}
+                transition={{ duration: 60, ease: 'linear' }}
+                className="text-center px-8 max-w-4xl"
+                style={{ transformOrigin: 'center bottom' }}
+              >
+                {/* Intro */}
+                <p className="text-gold-main text-2xl mb-8">אה איתמר! כתבתי עליכם שיר...</p>
+                
+                {/* Song lyrics - will scroll up */}
+                <div className="text-xl md:text-2xl text-gold-main/90 leading-loose whitespace-pre-line font-bold">
+                  {`ב-2025 לידרס על המפה
+זה כבר לא וייב זה עובדה
+
+מספרים עולים, לקוחות חוזרים
+כל הצלחה פה עבודה
+
+צוות נועה מריץ יעדים
+סוגר מהלכים בלי רעש
+
+צוות אלית מגדיל תקציבים
+יודע להפוך חזון לממש
+
+קריאייטיב חד, מדיה מדויקת
+כל בורג במקום
+
+ניהול לקוח מחזיק חזק
+גם כשנהיה קצת חם
+
+זה לא קסם, זה אנשים
+זה לב, מוח ודיוק
+
+לידרס לא רק שרדה את 2025
+היא יצאה ממנה בחיוך`}
+                </div>
+
+                {/* Ending message */}
+                <div className="mt-16 text-3xl md:text-4xl text-gold-main font-bold">
+                  שתהיה לנו 2026 מדהימה!
+                </div>
+                
+                <div className="mt-4 text-xl text-white/80">
+                  אנשים שיוצרים הזדמנויות
+                </div>
+
+                {/* Logo at the end */}
+                <img
+                  src="/logo.png"
+                  alt="LEADERS"
+                  className="mx-auto mt-12 h-20 opacity-80"
+                />
+              </motion.div>
             </div>
 
-            {/* Logo */}
-            <motion.img
-              src="/logo.png"
-              alt="LEADERS"
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3, type: 'spring', bounce: 0.4 }}
-              className="relative z-10 h-24 mb-12"
-            />
-
-            {/* Title */}
-            <motion.h1
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="relative z-10 text-5xl md:text-7xl font-bold text-gold-main text-center mb-6"
-            >
-              שתהיה לנו 2026 מדהימה!
-            </motion.h1>
-
-            {/* Subtitle */}
-            <motion.p
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.9 }}
-              className="relative z-10 text-2xl text-white/80 text-center"
-            >
-              אנשים שיוצרים הזדמנויות
-            </motion.p>
-
-            {/* Decorative line */}
-            <motion.div
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ delay: 1.2, duration: 0.8 }}
-              className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold-main to-transparent"
-            />
+            {/* Gradient fade at top */}
+            <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black to-transparent z-10" />
+            
+            {/* Gradient fade at bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black to-transparent z-10" />
 
             {/* Back button */}
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.5 }}
+              transition={{ delay: 1 }}
               onClick={() => setShowClosingSlide(false)}
-              className="absolute top-6 left-6 text-white/60 hover:text-white transition-colors"
+              className="absolute top-6 left-6 text-white/60 hover:text-white transition-colors z-20"
             >
               <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

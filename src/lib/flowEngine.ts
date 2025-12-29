@@ -219,6 +219,43 @@ ${data.vision_2026.bullets.map(b => `- ${b}`).join('\n')}`;
   // שאלה 20: שיר ראפ
   'RAP_SUMMARY': (data) => {
     return data.rap_summary.lyrics;
+  },
+
+  // שאלה 20 (חדש): שינוי דאטה פלוס
+  'DATAPLUS_CHANGE': (data) => {
+    return `${data.dataplus_change.description}
+
+חשוב להגיד בצורה ברורה: ${data.dataplus_change.credit}`;
+  },
+
+  // שאלה 21: ממוצע ותק הנהלה
+  'MANAGEMENT_TENURE': (data) => {
+    return `ממוצע הוותק של חברי ההנהלה בלידרס עומד על ${data.management_tenure.average_years} שנים.
+
+${data.management_tenure.description}`;
+  },
+
+  // שאלה 23: אמילי - פיתוח עסקי
+  'EMILY_INTRO': (data) => {
+    return `אוקיי, ${data.emily_intro.question}
+${data.emily_intro.followup}
+
+${data.emily_intro.action}`;
+  },
+
+  // שאלה 25: הדגמה הצעות מחיר
+  'DEMO_PRICING': () => {
+    return `עידו מדגים...`;
+  },
+
+  // שאלה 27: הדגמה אג'נט משפיענים
+  'DEMO_INFLUENCERS': () => {
+    return `עידו עושה הדגמה לאג'נט משפיענים`;
+  },
+
+  // שקף סיום
+  'CLOSING_SLIDE': () => {
+    return `שתהיה לנו 2026 מדהימה!`;
   }
 };
 
@@ -379,12 +416,15 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
     }
   }),
 
-  'ENZO_SODASTREAM': () => ({
-    type: 'VIDEO_EMBED',
+  'ENZO_SODASTREAM': (data) => ({
+    type: 'VIDEO_GALLERY',
     props: {
-      url: '/vids/sodastream/Final_5.mp4',
       title: 'SodaStream Enso',
-      description: '3 אנשים, מהלך אחד, אימפקט גדול'
+      videos: [
+        { url: data.campaigns.enzo_sodastream.client_quote.screenshot, title: 'הודעה מעמית - מנהלת המותג', isImage: true },
+        { url: '/vids/sodastream/Final_5.mp4', title: 'SodaStream Enso AI Experience' },
+        { url: '/vids/sodastream/instagram_clip.mp4', title: 'Instagram Clip' }
+      ]
     }
   }),
 
@@ -399,19 +439,21 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   }),
 
   'MOST_COMMON_MEETING_PHRASE': (data) => ({
-    type: 'QUOTE_CARD',
+    type: 'IMAGE_CARD',
     props: {
-      quote: data.culture.most_common_meeting_phrase,
-      author: 'המשפט הכי נפוץ בזום'
+      src: data.culture.meeting_phrase_image,
+      title: data.culture.most_common_meeting_phrase,
+      description: 'המשפט הכי נפוץ בפגישות הוידאו'
     }
   }),
 
   'CULTURE_EVENTS': (data) => ({
-    type: 'KPI_BIG_NUMBER',
+    type: 'VIDEO_WITH_KPI',
     props: {
+      url: data.culture.company_events[0].video,
       value: data.culture.thursday_happy_count,
       label: 'חמישי שמח',
-      subtext: data.culture.thursday_happy_highlight
+      subtext: data.culture.company_events[0].name
     }
   }),
 
@@ -486,6 +528,56 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
       autoPlay: true,
       lyrics: data.rap_summary.lyrics
     }
+  }),
+
+  'DATAPLUS_CHANGE': () => ({
+    type: 'QUOTE_CARD',
+    props: {
+      quote: 'דאטה פלוס - סדר, שקיפות ודיוק',
+      author: 'הקרדיט למחלקת הכספים'
+    }
+  }),
+
+  'MANAGEMENT_TENURE': (data) => ({
+    type: 'KPI_BIG_NUMBER',
+    props: {
+      value: data.management_tenure.average_years,
+      label: 'שנים',
+      subtext: 'ממוצע ותק הנהלה'
+    }
+  }),
+
+  'EMILY_INTRO': () => ({
+    type: 'QUOTE_CARD',
+    props: {
+      quote: 'מי כאן לא שמע על אמילי?',
+      author: 'פיתוח עסקי'
+    }
+  }),
+
+  'DEMO_PRICING': () => ({
+    type: 'QUOTE_CARD',
+    props: {
+      quote: 'הדגמה חיה',
+      author: 'עידו מדגים את אג\'נט הצעות המחיר'
+    }
+  }),
+
+  'DEMO_INFLUENCERS': () => ({
+    type: 'QUOTE_CARD',
+    props: {
+      quote: 'הדגמה חיה',
+      author: 'עידו מדגים את אג\'נט המשפיענים'
+    }
+  }),
+
+  'CLOSING_SLIDE': () => ({
+    type: 'CLOSING_SLIDE',
+    props: {
+      title: 'שתהיה לנו 2026 מדהימה!',
+      subtitle: 'אנשים שיוצרים הזדמנויות',
+      logo: '/logo.png'
+    }
   })
 };
 
@@ -535,8 +627,16 @@ function detectIntent(text: string): string | null {
     [['dna', 'ערכים', 'זהות', '5 ערכים', 'הגדיר את ה-dna'], 'COMPANY_DNA'],
     
     // יועצים ו-2026
-    [['יועצים', 'מלווים', 'אחיעד', 'כוכבית', 'מיטל', 'אסף'], 'CONSULTANTS'],
-    [['חזון', 'לידרס ב-2026', 'שנה הבאה', 'welcome 2026', 'ספר לי על לידרס'], 'VISION_2026_INTRO']
+    [['יועצים', 'מלווים', 'אחיעד', 'כוכבית', 'מיטל', 'אסף', 'עומרי'], 'CONSULTANTS'],
+    [['חזון', 'לידרס ב-2026', 'שנה הבאה', 'welcome 2026', 'ספר לי על לידרס'], 'VISION_2026_INTRO'],
+    
+    // שאלות חדשות
+    [['שינוי משמעותי', 'דאטה פלוס', 'dataplus', 'מערכת חדשה'], 'DATAPLUS_CHANGE'],
+    [['ותק', 'שנים בממוצע', 'כמה שנים', 'חברי ההנהלה עובדים'], 'MANAGEMENT_TENURE'],
+    [['אמילי', 'פיתוח עסקי שאפשר', 'emily'], 'EMILY_INTRO'],
+    [['הצעות מחיר', 'טכנולוגיה להצעות'], 'DEMO_PRICING'],
+    [['דוגמא לפיתוח', 'אג\'נט משפיענים', 'הדגמה לאג\'נט'], 'DEMO_INFLUENCERS'],
+    [['2026 מדהימה', 'סיום', 'לסיים', 'תודה לכולם'], 'CLOSING_SLIDE']
   ];
 
   for (const [keywords, intentId] of intentPatterns) {

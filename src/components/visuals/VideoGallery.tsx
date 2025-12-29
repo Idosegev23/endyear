@@ -2,11 +2,13 @@
 
 import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 
 interface VideoItem {
   url: string;
   title?: string;
   description?: string;
+  isImage?: boolean;
 }
 
 interface VideoGalleryProps {
@@ -19,13 +21,14 @@ export function VideoGallery({ videos, title }: VideoGalleryProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
+    const currentItem = videos[activeIndex];
+    if (videoRef.current && !currentItem.isImage) {
       videoRef.current.load();
       videoRef.current.play().catch(() => {});
     }
-  }, [activeIndex]);
+  }, [activeIndex, videos]);
 
-  const currentVideo = videos[activeIndex];
+  const currentItem = videos[activeIndex];
 
   return (
     <motion.div
@@ -39,22 +42,31 @@ export function VideoGallery({ videos, title }: VideoGalleryProps) {
         </div>
       )}
       
-      {/* Main Video */}
+      {/* Main Content */}
       <div className="relative aspect-video">
-        <video
-          ref={videoRef}
-          src={currentVideo.url}
-          className="w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-        />
-        {currentVideo.title && (
+        {currentItem.isImage ? (
+          <Image
+            src={currentItem.url}
+            alt={currentItem.title || 'Image'}
+            fill
+            className="object-contain"
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            src={currentItem.url}
+            className="w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        )}
+        {currentItem.title && (
           <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-            <h4 className="text-lg font-bold text-white">{currentVideo.title}</h4>
-            {currentVideo.description && (
-              <p className="text-sm text-gray-300">{currentVideo.description}</p>
+            <h4 className="text-lg font-bold text-white">{currentItem.title}</h4>
+            {currentItem.description && (
+              <p className="text-sm text-gray-300">{currentItem.description}</p>
             )}
           </div>
         )}
@@ -73,12 +85,21 @@ export function VideoGallery({ videos, title }: VideoGalleryProps) {
                 index === activeIndex ? 'border-gold-main' : 'border-transparent'
               }`}
             >
-              <video
-                src={video.url}
-                className="w-full h-full object-cover"
-                muted
-                playsInline
-              />
+              {video.isImage ? (
+                <Image
+                  src={video.url}
+                  alt={video.title || 'Thumbnail'}
+                  fill
+                  className="object-cover"
+                />
+              ) : (
+                <video
+                  src={video.url}
+                  className="w-full h-full object-cover"
+                  muted
+                  playsInline
+                />
+              )}
               {index === activeIndex && (
                 <div className="absolute inset-0 bg-gold-main/20" />
               )}
@@ -89,4 +110,3 @@ export function VideoGallery({ videos, title }: VideoGalleryProps) {
     </motion.div>
   );
 }
-

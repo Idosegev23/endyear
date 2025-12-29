@@ -20,7 +20,8 @@ import {
   ComparisonTable,
   ConsultantCards,
   AudioPlayer,
-  LeaderboardWithVideos
+  LeaderboardWithVideos,
+  ClosingSlide
 } from './visuals';
 import type { FlowQuestion } from '@/lib/flowQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
@@ -295,6 +296,8 @@ function VisualRenderer({ visual }: { visual: VisualPayload }) {
       return <AudioPlayer {...p} />;
     case 'LEADERBOARD_WITH_VIDEOS':
       return <LeaderboardWithVideos {...p} />;
+    case 'CLOSING_SLIDE':
+      return <ClosingSlide {...p} />;
     default:
       return null;
   }

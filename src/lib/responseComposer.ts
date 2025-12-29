@@ -18,7 +18,8 @@ export type VisualType =
   | 'VIDEO_GALLERY'
   | 'CONSULTANT_CARDS'
   | 'AUDIO_PLAYER'
-  | 'LEADERBOARD_WITH_VIDEOS';
+  | 'LEADERBOARD_WITH_VIDEOS'
+  | 'CLOSING_SLIDE';
 
 export interface VisualPayload {
   type: VisualType;

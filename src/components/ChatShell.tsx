@@ -48,6 +48,8 @@ export function ChatShell() {
   const [askedIntents, setAskedIntents] = useState<string[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [typingMessageId, setTypingMessageId] = useState<number | null>(null);
+  const [showClosingSlide, setShowClosingSlide] = useState(false);
+  const [showFinishButton, setShowFinishButton] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const botMessagesEndRef = useRef<HTMLDivElement>(null);
   const botContainerRef = useRef<HTMLDivElement>(null);
@@ -119,6 +121,11 @@ export function ChatShell() {
       
       if (data.intent_id !== 'UNKNOWN' && data.intent_id !== 'ERROR') {
         setAskedIntents(prev => [...prev, data.intent_id]);
+      }
+      
+      // Show finish button after DEMO_INFLUENCERS
+      if (data.intent_id === 'DEMO_INFLUENCERS') {
+        setTimeout(() => setShowFinishButton(true), 2000);
       }
 
     } catch (error) {
@@ -247,10 +254,108 @@ export function ChatShell() {
                 </motion.div>
               )}
               <div ref={botMessagesEndRef} />
+              
+              {/* Finish Button */}
+              <AnimatePresence>
+                {showFinishButton && !showClosingSlide && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="flex justify-center mt-8"
+                  >
+                    <button
+                      onClick={() => setShowClosingSlide(true)}
+                      className="px-8 py-4 bg-gold-main text-near-black font-bold text-xl rounded-2xl hover:bg-gold-main/90 transition-colors shadow-lg"
+                    >
+                      שנסיים?
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
       </div>
+      
+      {/* Fullscreen Closing Slide */}
+      <AnimatePresence>
+        {showClosingSlide && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-deep-black flex flex-col items-center justify-center"
+          >
+            {/* Background glow */}
+            <div className="absolute inset-0 overflow-hidden">
+              <motion.div
+                animate={{
+                  scale: [1, 1.3, 1],
+                  opacity: [0.2, 0.4, 0.2]
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: 'easeInOut'
+                }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-main/20 rounded-full blur-3xl"
+              />
+            </div>
+
+            {/* Logo */}
+            <motion.img
+              src="/logo.png"
+              alt="LEADERS"
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.3, type: 'spring', bounce: 0.4 }}
+              className="relative z-10 h-24 mb-12"
+            />
+
+            {/* Title */}
+            <motion.h1
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="relative z-10 text-5xl md:text-7xl font-bold text-gold-main text-center mb-6"
+            >
+              שתהיה לנו 2026 מדהימה!
+            </motion.h1>
+
+            {/* Subtitle */}
+            <motion.p
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.9 }}
+              className="relative z-10 text-2xl text-white/80 text-center"
+            >
+              אנשים שיוצרים הזדמנויות
+            </motion.p>
+
+            {/* Decorative line */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ delay: 1.2, duration: 0.8 }}
+              className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold-main to-transparent"
+            />
+
+            {/* Back button */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5 }}
+              onClick={() => setShowClosingSlide(false)}
+              className="absolute top-6 left-6 text-white/60 hover:text-white transition-colors"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

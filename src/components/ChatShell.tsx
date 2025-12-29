@@ -52,6 +52,7 @@ export function ChatShell() {
   const [typingMessageId, setTypingMessageId] = useState<number | null>(null);
   const [showClosingSlide, setShowClosingSlide] = useState(false);
   const [showFinishButton, setShowFinishButton] = useState(false);
+  const [showSongScreen, setShowSongScreen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const botMessagesEndRef = useRef<HTMLDivElement>(null);
   const botContainerRef = useRef<HTMLDivElement>(null);
@@ -267,7 +268,7 @@ export function ChatShell() {
                     className="flex justify-center mt-8"
                   >
                     <button
-                      onClick={() => setShowClosingSlide(true)}
+                      onClick={() => setShowSongScreen(true)}
                       className="px-8 py-4 bg-gold-main text-near-black font-bold text-xl rounded-2xl hover:bg-gold-main/90 transition-colors shadow-lg"
                     >
                       שנסיים?
@@ -280,6 +281,105 @@ export function ChatShell() {
         </div>
       </div>
       
+      {/* Song Screen */}
+      <AnimatePresence>
+        {showSongScreen && !showClosingSlide && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-deep-black flex flex-col items-center justify-center"
+          >
+            {/* Background glow */}
+            <div className="absolute inset-0 overflow-hidden">
+              <motion.div
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.1, 0.3, 0.1]
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut'
+                }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gold-main/20 rounded-full blur-3xl"
+              />
+            </div>
+
+            {/* Intro text */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="relative z-10 text-3xl text-gold-main font-bold mb-8"
+            >
+              אה איתמר! כתבתי עליכם שיר
+            </motion.p>
+
+            {/* Lyrics display */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              className="relative z-10 max-w-3xl mx-auto text-center px-8"
+            >
+              <div className="text-xl md:text-2xl text-white/90 leading-relaxed whitespace-pre-line">
+                {`ב-2025 לידרס על המפה, זה כבר לא וייב זה עובדה
+מספרים עולים, לקוחות חוזרים, כל הצלחה פה עבודה
+צוות נועה מריץ יעדים, סוגר מהלכים בלי רעש
+צוות אלית מגדיל תקציבים, יודע להפוך חזון לממש
+קריאייטיב חד, מדיה מדויקת, כל בורג במקום
+ניהול לקוח מחזיק חזק, גם כשנהיה קצת חם
+זה לא קסם, זה אנשים, זה לב, מוח ודיוק
+לידרס לא רק שרדה את 2025 - היא יצאה ממנה בחיוך`}
+              </div>
+            </motion.div>
+
+            {/* Audio player */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.5 }}
+              className="relative z-10 mt-8"
+            >
+              <audio
+                src="/vids/sound/song.mp3"
+                autoPlay
+                controls
+                className="w-80"
+              />
+            </motion.div>
+
+            {/* Continue button */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2 }}
+              onClick={() => {
+                setShowSongScreen(false);
+                setShowClosingSlide(true);
+              }}
+              className="relative z-10 mt-12 px-8 py-4 bg-gold-main text-near-black font-bold text-xl rounded-2xl hover:bg-gold-main/90 transition-colors"
+            >
+              המשך לסיום
+            </motion.button>
+
+            {/* Close button */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+              onClick={() => setShowSongScreen(false)}
+              className="absolute top-6 left-6 text-white/60 hover:text-white transition-colors"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Fullscreen Closing Slide */}
       <AnimatePresence>
         {showClosingSlide && (

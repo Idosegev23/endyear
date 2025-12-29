@@ -331,8 +331,8 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
         { rank: 3, name: 'קולגייט', value: 35, suffix: '%', subtitle: 'צמיחה' }
       ],
       videos: [
-        { url: '/vids/seacret/IMG_6855.MP4', title: 'משרד התיירות' },
-        { url: '/vids/tayarut/1.mp4', title: 'Seacret' },
+        { url: '/vids/tayarut/1.mp4', title: 'משרד התיירות' },
+        { url: '/vids/seacret/IMG_6855.MP4', title: 'Seacret' },
         { url: '/vids/colgate/Meridol Bathroom 6s 16x9 V05 HQ.mp4', title: 'קולגייט - מרידול' }
       ]
     }

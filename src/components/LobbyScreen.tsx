@@ -11,8 +11,31 @@ export function LobbyScreen() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6"
+      className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-6 bg-white"
     >
+      {/* Diagonal Video Strip */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute"
+          style={{
+            top: '50%',
+            left: '50%',
+            width: '200%',
+            height: '300px',
+            transform: 'translate(-50%, -50%) rotate(-15deg)',
+          }}
+        >
+          <video
+            src="/vids/opening/opening_compressed.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover opacity-30"
+          />
+        </div>
+      </div>
+
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div 

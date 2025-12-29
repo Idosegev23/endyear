@@ -288,7 +288,7 @@ export function ChatShell() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black overflow-hidden"
+            className="fixed inset-0 z-50 bg-black overflow-hidden flex"
           >
             {/* Stars background */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black" />
@@ -300,20 +300,23 @@ export function ChatShell() {
               className="hidden"
             />
 
-            {/* Star Wars style crawl container */}
-            <div className="absolute inset-0 flex items-end justify-center overflow-hidden" style={{ perspective: '400px' }}>
+            {/* Right side - Scrolling lyrics (40%) */}
+            <div className="relative w-[40%] h-full overflow-hidden" style={{ perspective: '400px' }}>
+              {/* Gradient fade at top */}
+              <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-10" />
+              
               <motion.div
-                initial={{ rotateX: 25, translateY: '100%' }}
-                animate={{ rotateX: 25, translateY: '-200%' }}
+                initial={{ rotateX: 20, translateY: '100%' }}
+                animate={{ rotateX: 20, translateY: '-300%' }}
                 transition={{ duration: 180, ease: 'linear' }}
-                className="text-center px-8 max-w-5xl"
+                className="text-center px-6 pt-20"
                 style={{ transformOrigin: 'center bottom' }}
               >
                 {/* Intro */}
-                <p className="text-gold-main text-6xl mb-16">אה איתמר! כתבתי עליכם שיר...</p>
+                <p className="text-gold-main/60 text-2xl mb-8">כתבתי עליכם שיר...</p>
                 
                 {/* Song lyrics - will scroll up */}
-                <div className="text-5xl md:text-7xl text-gold-main/90 leading-relaxed whitespace-pre-line font-bold">
+                <div className="text-2xl md:text-3xl text-gold-main/80 leading-loose whitespace-pre-line font-medium">
                   {`ב-2025 לידרס על המפה
 זה כבר לא וייב זה עובדה
 
@@ -338,30 +341,60 @@ export function ChatShell() {
 לידרס לא רק שרדה את 2025
 היא יצאה ממנה בחיוך`}
                 </div>
-
-                {/* Ending message */}
-                <div className="mt-24 text-6xl md:text-8xl text-gold-main font-bold">
-                  שתהיה לנו 2026 מדהימה!
-                </div>
-                
-                <div className="mt-8 text-4xl text-white/80">
-                  אנשים שיוצרים הזדמנויות
-                </div>
-
-                {/* Logo at the end */}
-                <img
-                  src="/logo.png"
-                  alt="LEADERS"
-                  className="mx-auto mt-16 h-32 opacity-80"
-                />
               </motion.div>
+              
+              {/* Gradient fade at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-10" />
             </div>
 
-            {/* Gradient fade at top */}
-            <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-black to-transparent z-10" />
-            
-            {/* Gradient fade at bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black to-transparent z-10" />
+            {/* Left side - Fixed content (60%) */}
+            <div className="relative w-[60%] h-full flex flex-col items-center justify-center z-20">
+              {/* Background glow */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.2, 0.4, 0.2]
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: 'easeInOut'
+                }}
+                className="absolute w-[500px] h-[500px] bg-gold-main/20 rounded-full blur-3xl"
+              />
+
+              {/* Main title */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="relative text-5xl md:text-7xl font-bold text-gold-main text-center mb-8 leading-tight"
+              >
+                שתהיה לנו
+                <br />
+                2026 מדהימה!
+              </motion.h1>
+
+              {/* Logo */}
+              <motion.img
+                src="/logo.png"
+                alt="LEADERS"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8, type: 'spring' }}
+                className="relative h-24 mb-8"
+              />
+
+              {/* Subtitle */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.1 }}
+                className="relative text-3xl text-white/80 text-center"
+              >
+                אנשים שיוצרים הזדמנויות
+              </motion.p>
+            </div>
 
             {/* Back button */}
             <motion.button

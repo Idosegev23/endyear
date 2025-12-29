@@ -96,14 +96,15 @@ export function LeaderboardWithVideos({ title, items, videos }: LeaderboardWithV
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
-          className="relative aspect-video rounded-xl overflow-hidden bg-gray-900"
+          className="relative rounded-xl overflow-hidden bg-gray-900 flex items-center justify-center"
+          style={{ minHeight: '300px' }}
         >
           {videos[activeVideoIndex] && (
             <>
               <video
                 ref={videoRef}
                 src={videos[activeVideoIndex].url}
-                className="w-full h-full object-cover"
+                className="max-w-full max-h-[400px] object-contain"
                 autoPlay
                 muted
                 loop
@@ -141,4 +142,5 @@ export function LeaderboardWithVideos({ title, items, videos }: LeaderboardWithV
     </motion.div>
   );
 }
+
 

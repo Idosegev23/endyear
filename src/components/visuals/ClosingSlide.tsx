@@ -79,3 +79,4 @@ export function ClosingSlide({ title, subtitle, logo = '/logo.png' }: ClosingSli
   );
 }
 
+

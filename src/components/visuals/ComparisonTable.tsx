@@ -104,3 +104,4 @@ export function ComparisonTable({ title, scenario_1, scenario_2 }: ComparisonTab
   );
 }
 
+

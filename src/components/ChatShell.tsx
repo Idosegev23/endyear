@@ -21,7 +21,9 @@ import {
   ConsultantCards,
   AudioPlayer,
   LeaderboardWithVideos,
-  ClosingSlide
+  ClosingSlide,
+  ProjectShowcase,
+  TextWithVideo
 } from './visuals';
 import type { FlowQuestion } from '@/lib/flowQuestions';
 import type { VisualPayload } from '@/lib/responseComposer';
@@ -197,7 +199,7 @@ export function ChatShell() {
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-gray-50 rounded-2xl px-5 py-4"
                 >
-                  <p className="text-gray-800 text-xl leading-relaxed">{msg.text}</p>
+                  <p className="text-gray-800 text-2xl leading-relaxed">{msg.text}</p>
                 </motion.div>
               ))}
               <div ref={messagesEndRef} />
@@ -212,7 +214,7 @@ export function ChatShell() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="הקלד שאלה..."
-                className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-lg focus:outline-none focus:border-gold-main focus:ring-2 focus:ring-gold-main/20 pl-14"
+                className="w-full px-5 py-4 bg-gray-50 border border-gray-200 rounded-xl text-xl focus:outline-none focus:border-gold-main focus:ring-2 focus:ring-gold-main/20 pl-14"
                 disabled={isTyping || typingMessageId !== null}
               />
               <button
@@ -403,6 +405,10 @@ function VisualRenderer({ visual }: { visual: VisualPayload }) {
       return <LeaderboardWithVideos {...p} />;
     case 'CLOSING_SLIDE':
       return <ClosingSlide {...p} />;
+    case 'PROJECT_SHOWCASE':
+      return <ProjectShowcase {...p} />;
+    case 'TEXT_WITH_VIDEO':
+      return <TextWithVideo {...p} />;
     default:
       return null;
   }
@@ -489,7 +495,7 @@ function BotMessageBubble({
           </svg>
         </div>
         <div className="flex-1 bg-gray-900 rounded-2xl rounded-tr-sm px-5 py-4">
-          <p className="text-white text-lg leading-relaxed whitespace-pre-line">
+          <p className="text-white text-2xl leading-relaxed whitespace-pre-line">
             {displayedText}
             {isTyping && (
               <motion.span

@@ -55,16 +55,16 @@ export function ConsultantCards({ consultants, title }: ConsultantCardsProps) {
           <motion.div
             key={index}
             variants={cardVariants}
-            className="bg-gray-900 rounded-xl p-4 flex flex-col items-center text-center"
+            className="bg-gray-900 rounded-xl p-6 flex flex-col items-center text-center"
           >
             {/* Avatar */}
-            <div className="w-20 h-20 rounded-full overflow-hidden mb-4 border-2 border-gold-main/50">
+            <div className="w-24 h-24 rounded-full overflow-hidden mb-4 border-2 border-gold-main/50">
               {consultant.image ? (
                 <Image
                   src={consultant.image}
                   alt={consultant.name}
-                  width={80}
-                  height={80}
+                  width={96}
+                  height={96}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -77,10 +77,10 @@ export function ConsultantCards({ consultants, title }: ConsultantCardsProps) {
             </div>
 
             {/* Info */}
-            <h4 className="text-lg font-bold text-white mb-1">{consultant.name}</h4>
-            <p className="text-sm text-gold-main mb-2">{consultant.role}</p>
+            <h4 className="text-2xl font-bold text-white mb-2">{consultant.name}</h4>
+            <p className="text-lg text-gold-main mb-3">{consultant.role}</p>
             {consultant.description && (
-              <p className="text-xs text-gray-400 line-clamp-3">{consultant.description}</p>
+              <p className="text-sm text-gray-400 line-clamp-4">{consultant.description}</p>
             )}
           </motion.div>
         ))}
@@ -88,4 +88,5 @@ export function ConsultantCards({ consultants, title }: ConsultantCardsProps) {
     </motion.div>
   );
 }
+
 

@@ -71,3 +71,4 @@ echo "גדלים חדשים:"
 du -h "public/vids/colgate/Reel"* 2>/dev/null
 du -h "public/vids/xpeng/Master"* 2>/dev/null
 
+

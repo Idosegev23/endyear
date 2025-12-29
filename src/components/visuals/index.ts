@@ -18,3 +18,5 @@ export { ConsultantCards } from './ConsultantCards';
 export { AudioPlayer } from './AudioPlayer';
 export { LeaderboardWithVideos } from './LeaderboardWithVideos';
 export { ClosingSlide } from './ClosingSlide';
+export { ProjectShowcase } from './ProjectShowcase';
+export { TextWithVideo } from './TextWithVideo';

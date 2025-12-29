@@ -19,7 +19,9 @@ export type VisualType =
   | 'CONSULTANT_CARDS'
   | 'AUDIO_PLAYER'
   | 'LEADERBOARD_WITH_VIDEOS'
-  | 'CLOSING_SLIDE';
+  | 'CLOSING_SLIDE'
+  | 'PROJECT_SHOWCASE'
+  | 'TEXT_WITH_VIDEO';
 
 export interface VisualPayload {
   type: VisualType;

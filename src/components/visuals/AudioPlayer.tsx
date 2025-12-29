@@ -162,3 +162,4 @@ export function AudioPlayer({ src, title, autoPlay = true, lyrics }: AudioPlayer
   );
 }
 
+

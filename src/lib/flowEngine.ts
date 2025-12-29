@@ -181,7 +181,7 @@ ${v.description}`).join('\n\n')}`;
   // שאלה 16: יום פחות פרודוקטיבי
   'LEAST_PRODUCTIVE_TIME': (data) => {
     const lpt = data.culture.least_productive_time;
-    return `אז ${lpt.when} אתם הופכים ל${lpt.description}.
+    return `אז ${lpt.when} ${lpt.description}.
 אי אפשר לבוא אליכם כמובן בטענות אבל כנראה ש${lpt.recommendation}.`;
   },
 
@@ -203,10 +203,8 @@ ${s2.notes}`;
   },
 
   // שאלה 18: יועצים
-  'CONSULTANTS': (data) => {
-    return `${data.consultants.map(c => `${c.name}
-${c.role}
-${c.description || ''}`).join('\n\n')}`;
+  'CONSULTANTS': () => {
+    return `אלה היועצים שמלווים אותנו בדרך:`;
   },
 
   // שאלה 19: חזון 2026
@@ -238,9 +236,7 @@ ${data.management_tenure.description}`;
   // שאלה 23: אמילי - פיתוח עסקי
   'EMILY_INTRO': (data) => {
     return `אוקיי, ${data.emily_intro.question}
-${data.emily_intro.followup}
-
-${data.emily_intro.action}`;
+${data.emily_intro.followup}`;
   },
 
   // שאלה 25: הדגמה הצעות מחיר
@@ -325,25 +321,19 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
     }
   }),
 
-  'TOP_REVENUE_CLIENT_2025': (data) => ({
+  'TOP_REVENUE_CLIENT_2025': () => ({
     type: 'LEADERBOARD_WITH_VIDEOS',
     props: {
       title: 'לקוחות בצמיחה 2025',
-      items: data.finance.top_revenue_clients
-        .filter((c: { growth_pct?: number }) => c.growth_pct)
-        .sort((a: { growth_pct?: number }, b: { growth_pct?: number }) => (b.growth_pct || 0) - (a.growth_pct || 0))
-        .slice(0, 3)
-        .map((c: { name: string; growth_pct?: number }, i: number) => ({
-          rank: i + 1,
-          name: c.name,
-          value: c.growth_pct,
-          suffix: '%',
-          subtitle: 'צמיחה'
-        })),
+      items: [
+        { rank: 1, name: 'משרד התיירות', value: 107, suffix: '%', subtitle: 'צמיחה' },
+        { rank: 2, name: 'Seacret', value: 45, suffix: '%', subtitle: 'צמיחה' },
+        { rank: 3, name: 'קולגייט', value: 35, suffix: '%', subtitle: 'צמיחה' }
+      ],
       videos: [
-        { url: '/vids/colgate/Meridol Bathroom 6s 16x9 V05 HQ.mp4', title: 'קולגייט - מרידול' },
-        { url: '/vids/seacret/IMG_6855.MP4', title: 'Seacret' },
-        { url: '/vids/tayarut/1.mp4', title: 'משרד התיירות' }
+        { url: '/vids/seacret/IMG_6855.MP4', title: 'משרד התיירות' },
+        { url: '/vids/tayarut/1.mp4', title: 'Seacret' },
+        { url: '/vids/colgate/Meridol Bathroom 6s 16x9 V05 HQ.mp4', title: 'קולגייט - מרידול' }
       ]
     }
   }),
@@ -417,14 +407,13 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   }),
 
   'ENZO_SODASTREAM': (data) => ({
-    type: 'VIDEO_GALLERY',
+    type: 'PROJECT_SHOWCASE',
     props: {
-      title: 'SodaStream Enso',
-      videos: [
-        { url: data.campaigns.enzo_sodastream.client_quote.screenshot, title: 'הודעה מעמית - מנהלת המותג', isImage: true },
-        { url: '/vids/sodastream/Final_5.mp4', title: 'SodaStream Enso AI Experience' },
-        { url: '/vids/sodastream/instagram_clip.mp4', title: 'Instagram Clip' }
-      ]
+      title: 'SodaStream Enso - AI Experience',
+      screenshot: data.campaigns.enzo_sodastream.client_quote.screenshot,
+      screenshotCaption: `"${data.campaigns.enzo_sodastream.client_quote.word}" - ${data.campaigns.enzo_sodastream.client_quote.from}`,
+      video: '/vids/sodastream/Final_5.mp4',
+      videoTitle: 'SodaStream Enso Campaign'
     }
   }),
 
@@ -458,13 +447,15 @@ const INTENT_VISUALS: Record<string, (data: typeof dataPack) => { type: string; 
   }),
 
   'TOP_PERFORMING_TEAM': (data) => ({
-    type: 'VIDEO_WITH_KPI',
+    type: 'TEXT_WITH_VIDEO',
     props: {
-      url: data.kpi.top_performing_team.video,
-      value: (data.kpi.top_performing_team.actual / 1000000).toFixed(2),
-      label: `${data.kpi.top_performing_team.name} - ${data.kpi.top_performing_team.client}`,
-      suffix: 'M',
-      subtext: `יעד: ${(data.kpi.top_performing_team.target / 1000000).toFixed(0)} מיליון`
+      title: `${data.kpi.top_performing_team.name} - ${data.kpi.top_performing_team.client}`,
+      kpiValue: (data.kpi.top_performing_team.actual / 1000000).toFixed(2),
+      kpiLabel: `יעד: ${(data.kpi.top_performing_team.target / 1000000).toFixed(0)} מיליון`,
+      kpiSuffix: 'M',
+      description: data.kpi.top_performing_team.result,
+      video: data.kpi.top_performing_team.video,
+      videoTitle: 'קמפיין H&M'
     }
   }),
 

@@ -6,8 +6,8 @@
     "slogan": "סיכום שנה LEADERS 2025"
   },
   "finance": {
-    "total_revenue": 35000000,
-    "total_revenue_2025": 35000000,
+    "total_revenue": 70000000,
+    "total_revenue_2025": 70000000,
     "total_revenue_2024": null,
     "strongest_quarter": "Q3",
     "strongest_quarter_deal": {
@@ -75,7 +75,7 @@
     "coffee_calculation": {
       "price_per_cup": 13,
       "aroma_medium_price": 13,
-      "total_cups": 2692307,
+      "total_cups": 5384614,
       "cups_per_employee": 76923
     },
     "roi_best": {
